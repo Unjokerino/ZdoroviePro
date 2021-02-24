@@ -22,7 +22,7 @@ export default function ExaminationScreen({ navigation }) {
 
   const [clinicName, setClinicName] = useState("");
   return (
-    <CustomLayout>
+    <CustomLayout openDrawer={navigation.openDrawer}>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
           <Text style={[styles.caption]}>

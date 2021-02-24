@@ -11,6 +11,12 @@ import PieChart from "./PieChart";
 import Loader from "./Loader";
 import Alcohol from "./Alcohol";
 import LightBulb from "./LightBulb";
+import MailIcon from "./Mail";
+import LockIcon from "./Lock";
+import EditIcon from "./Edit";
+import Google from "./Google";
+import Vk from "./Vk";
+import Apple from "./Apple";
 
 export default {
   AwardIcon,
@@ -26,4 +32,10 @@ export default {
   Loader,
   Alcohol,
   LightBulb,
+  MailIcon,
+  LockIcon,
+  EditIcon,
+  Google,
+  Vk,
+  Apple,
 };

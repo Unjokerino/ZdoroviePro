@@ -27,9 +27,10 @@ export default StyleSheet.create({
   },
   header: {
     paddingHorizontal: 25,
-    paddingTop: 15,
+
     flexDirection: "row",
     alignItems: "center",
+
     width: SCREEN_WIDTH,
     height: HEADER_HEIGHT,
   },

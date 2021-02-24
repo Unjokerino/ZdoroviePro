@@ -6,7 +6,8 @@ import useColorScheme from "../../hooks/useColorScheme";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.header,
+
+    backgroundColor: Colors.light.tint,
   },
   paragraph: {
     textAlign: "center",
@@ -15,6 +16,23 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 13,
   },
+  button: {
+    marginTop: 30,
+  },
+  progressContainer: {
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  progressInfo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 5,
+    alignItems: "center",
+  },
+  progressPercent: {
+    fontSize: 22,
+  },
+  progressCount: {},
 });
 
 export default styles;

@@ -110,7 +110,7 @@ export default function GoalsScreen({ navigation }) {
   );
 
   const renderContent = () => (
-    <CustomLayout>
+    <CustomLayout openDrawer={navigation.openDrawer}>
       <View style={styles.content}>
         <View
           style={[

@@ -52,7 +52,7 @@ const GOALS = [
 
 export default function HomeScreen({ navigation }) {
   const [user, setUser] = useState<User>();
-  const scrollY = new Animated.Value(0);
+  const [scrollY] = useState(new Animated.Value(0));
   const [visible, setVisible] = React.useState(false);
   const scrollRef = useRef();
   const showModal = () => setVisible(true);
@@ -193,6 +193,7 @@ export default function HomeScreen({ navigation }) {
       </Animated.View>
       <View style={styles.container}>
         <ScrollView
+          scrollEventThrottle={16}
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
           onScroll={Animated.event(
@@ -229,6 +230,7 @@ export default function HomeScreen({ navigation }) {
             </View>
 
             <ScrollView
+              scrollEventThrottle={16}
               ref={scrollRef}
               onScroll={(event) => {
                 const newIndex = Math.abs(

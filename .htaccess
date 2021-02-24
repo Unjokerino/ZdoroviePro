@@ -1,0 +1,6 @@
+PassengerStartupFile app.js
+PassengerResolveSymlinksInDocumentRoot on
+Require all granted
+PassengerAppType node
+PassengerAppRoot /domains/unoit.ru/public_html/api/src
+Options -MultiViews

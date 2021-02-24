@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { Provider } from "react-native-paper";
+import { Provider } from "react-redux";
+import store from "./store";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View } from "./components/Themed";
 import { Colors, SCREEN_WIDTH } from "./constants";
@@ -17,18 +18,12 @@ export default function App() {
     return null;
   } else {
     return (
-      <Provider>
+      <Provider store={store}>
         <View style={{ flex: 1 }}>
-          <View
-            style={{
-              height: 30,
-              width: SCREEN_WIDTH,
-              backgroundColor: Colors[colorScheme].header,
-            }}
-          ></View>
           <Navigation colorScheme={colorScheme} />
           <StatusBar />
         </View>
+        <StatusBar style="light" />
       </Provider>
     );
   }

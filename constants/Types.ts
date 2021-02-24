@@ -12,19 +12,23 @@ export interface Info {
   version: string;
 }
 
+export interface SystemProps {
+  shouldShowSnackBar: boolean;
+  snackBarMessage: string;
+  isEmulator: boolean;
+  osVersion: string;
+}
+
+export interface AuthProps {
+  identity: User;
+}
+
 export interface User {
-  gender: string;
-  name: Name;
-  location: Location;
+  id: string;
   email: string;
-  login: Login;
-  dob: Dob;
-  registered: Dob;
-  phone: string;
-  cell: string;
-  id: ID;
-  picture: Picture;
-  nat: string;
+  createdAt: string;
+  updatedAt: string;
+  token: string;
 }
 
 export interface Dob {

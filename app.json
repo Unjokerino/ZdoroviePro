@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HelloWorld",
-    "slug": "Medicina",
+    "name": "Здоровье",
+    "slug": "Zcorovie",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#6360FF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -19,13 +19,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mironov.healthpro"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#6360FF"
+      },
+      "permissions": [],
+      "package": "com.mironov.healthpro"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

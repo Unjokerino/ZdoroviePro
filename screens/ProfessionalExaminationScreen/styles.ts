@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { Colors, SCREEN_WIDTH } from "../../constants";
 
-const CARD_SIZE = SCREEN_WIDTH / 2 - 35;
+const CARD_SIZE = SCREEN_WIDTH - 35;
 
 export default StyleSheet.create({
   container: {
@@ -12,7 +12,8 @@ export default StyleSheet.create({
   },
   screenTitle: {
     fontWeight: "bold",
-    fontSize: 16,
+    paddingLeft: 10,
+    fontSize: 20,
   },
   menuContainer: {
     marginTop: 24,
@@ -22,7 +23,7 @@ export default StyleSheet.create({
   title: {
     fontWeight: "bold",
     marginVertical: 5,
-    minWidth: 100,
+    maxWidth: 120,
   },
   caption: {
     flex: 1,
@@ -31,12 +32,16 @@ export default StyleSheet.create({
   },
   appointmentInfoContainer: {
     paddingHorizontal: 15,
+
     flex: 1,
   },
   appointmentCard: {
-    backgroundColor: "white",
+    width: SCREEN_WIDTH - 50,
+    backgroundColor: "#FCFCFF",
     borderRadius: 10,
     padding: 15,
+    flex: 1,
+
     marginTop: 15,
   },
   appointmentImageContainer: {
@@ -53,8 +58,8 @@ export default StyleSheet.create({
   },
   card: {
     backgroundColor: "white",
-    width: CARD_SIZE,
-    height: CARD_SIZE,
+    width: "100%",
+    height: 70,
     borderRadius: 16,
     padding: 16,
   },
@@ -78,6 +83,11 @@ export default StyleSheet.create({
     justifyContent: "center",
   },
   infoCounter: {
+    flex: 1,
+    textAlign: "right",
+    alignItems: "center",
+    justifyContent: "center",
+
     fontSize: 28,
   },
 });

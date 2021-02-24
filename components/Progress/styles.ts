@@ -7,8 +7,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     width: "100%",
     overflow: "hidden",
-    marginTop: 25,
-    backgroundColor: Colors.light.background,
+
+    backgroundColor: "#E5E5E5",
   },
   progressBar: {
     backgroundColor: "#4DD0E1",

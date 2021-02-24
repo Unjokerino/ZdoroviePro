@@ -10,17 +10,30 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import Icons from "../../assets/icons";
 import { Colors, RANDOM_USER_URL } from "../../constants";
-import { User } from "../../constants/Types";
+import { signOut as signOutAction } from "../../store/actions";
 import styles from "./styles";
+import selectState from "../../store/selectors/auth";
+import { IconButton } from "react-native-paper";
 
 const SCREEN_HEIGHT = Dimensions.get("screen").height;
 
-export default function CustomLayout({ children }: { children: ReactElement }) {
-  const [user, setUser] = useState<User>();
+export default function CustomLayout({
+  children,
+  openDrawer,
+}: {
+  children: ReactElement;
+  openDrawer: (_: any) => void;
+}) {
+  const { identity: user } = useSelector(selectState);
+  const dispatch = useDispatch();
   const headerAnim = useRef(new Animated.Value(0)).current;
   const scrollY = new Animated.Value(0);
+  const signOut = () => {
+    dispatch(signOutAction());
+  };
   const renderButtons = () => (
     <View style={styles.iconButtonContainer}>
       <TouchableOpacity>
@@ -29,7 +42,7 @@ export default function CustomLayout({ children }: { children: ReactElement }) {
       <TouchableOpacity>
         <Icons.SlidersIcon color="white" />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={signOut}>
         <Icons.HelpIcon color="white" />
       </TouchableOpacity>
     </View>
@@ -37,16 +50,7 @@ export default function CustomLayout({ children }: { children: ReactElement }) {
 
   useEffect(() => {
     StatusBar.setBackgroundColor(Colors.light.header);
-
-    getUser();
   }, []);
-
-  const getUser = async () => {
-    const result = await fetch(RANDOM_USER_URL);
-    const json = await result.json();
-    const user: User | undefined = path(["results", 0], json);
-    setUser(user);
-  };
 
   const borderRadius = scrollY.interpolate({
     inputRange: [0, 100],
@@ -60,26 +64,49 @@ export default function CustomLayout({ children }: { children: ReactElement }) {
         style={[
           styles.header,
           {
-            height: scrollY.interpolate({
-              inputRange: [0, 100],
-              outputRange: [100, 75],
-              extrapolate: "clamp",
-            }),
+            height: 100,
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: 25,
           },
         ]}
       >
-        <View style={[styles.row]}>
-          <View style={[styles.row]}>
-            <Image
-              style={styles.avatar}
-              source={{ uri: user?.picture.medium }}
-            />
-            <Text style={[styles.headerTitle, { margin: 12 }]}>
-              {`${user?.name.last} ${user?.name.first}`}
-            </Text>
-          </View>
+        <View
+          style={[
+            {
+              justifyContent: "flex-start",
+              flexDirection: "row",
+              alignItems: "center",
+              alignSelf: "center",
+              height: "100%",
+            },
+          ]}
+        >
+          <IconButton onPress={openDrawer} icon="menu" color="white" />
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: user?.picture || "https://i.stack.imgur.com/l60Hf.png",
+            }}
+          />
+          <Text
+            numberOfLines={1}
+            style={[
+              styles.headerTitle,
+              { margin: 12, alignItems: "center", maxWidth: 100 },
+            ]}
+          >
+            {`${user?.email}`}
+          </Text>
         </View>
-        {renderButtons()}
+        <View
+          style={{
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+        >
+          {renderButtons()}
+        </View>
       </Animated.View>
       <Animated.View
         style={[
@@ -91,16 +118,23 @@ export default function CustomLayout({ children }: { children: ReactElement }) {
         ]}
       >
         <ScrollView
+          nestedScrollEnabled
+          scrollEventThrottle={16}
           style={styles.scrollView}
-          onScroll={Animated.event([
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: scrollY,
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: {
+                    y: scrollY,
+                  },
                 },
               },
-            },
-          ])}
+            ],
+            {
+              useNativeDriver: false,
+            }
+          )}
           showsVerticalScrollIndicator={false}
         >
           {children}
