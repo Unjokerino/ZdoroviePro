@@ -1,7 +1,7 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleProp, ViewStyle } from "react-native";
+import { TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 import { styles } from "./styles";
-
+import { Text } from "../Themed";
 const Button = ({
   title,
   onPress,
@@ -31,7 +31,7 @@ const Button = ({
       <Text
         style={[
           styles[textStyle],
-          { textAlign: "center" },
+          { textAlign: "center", fontWeight: "bold", fontSize: 17 },
           textColor ? { color: textColor } : {},
         ]}
       >

@@ -7,8 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { Caption, Title } from "react-native-paper";
-import { View } from "../../components/Themed";
+
+import { View, Caption, Title } from "../../components/Themed";
 import styles from "./styles";
 import Icons from "../../assets/icons";
 import Button from "../../components/Button";
@@ -87,7 +87,7 @@ export default function TestScreen({ navigation }) {
         />
         <Title style={styles.title}>Здоровье PRO</Title>
 
-        <ScrollView style={styles.wrapper}>
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.wrapper}>
           <View
             style={[
               styles.inputContainer,

@@ -9,20 +9,23 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.header,
   },
   video: {
-    height: 300,
+    height: "100%",
     width: "100%",
   },
   paragraph: {
     textAlign: "left",
     alignSelf: "center",
+    fontStyle: "italic",
   },
   subtitle: {
     textAlign: "center",
     marginBottom: 35,
+    fontSize: 18,
     fontWeight: "600",
   },
   title: {
     marginBottom: 13,
+    fontWeight: "bold",
     alignSelf: "center",
   },
   paragraphContainer: {
@@ -36,8 +39,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    paddingTop: 25,
-    paddingBottom: 100,
+    paddingTop: 46,
+    paddingBottom: 163,
 
     borderTopStartRadius: 30,
     borderTopEndRadius: 30,
@@ -50,12 +53,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     justifyContent: "center",
+
+    marginBottom: 63,
   },
   button: {
     backgroundColor: Colors.light.tint,
     paddingHorizontal: 30,
     paddingVertical: 16,
     borderRadius: 10,
+
     width: 280,
   },
 });

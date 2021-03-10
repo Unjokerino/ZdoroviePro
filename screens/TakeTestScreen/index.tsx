@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { View, Text, ImageBackground, ScrollView } from "react-native";
-import { Paragraph, Title } from "react-native-paper";
+import { Paragraph, Title } from "../../components/Themed";
 import { useDispatch, useSelector } from "react-redux";
 import { Colors, TEST_FILL_INFO, TEST_SCREEN } from "../../constants";
 import styles from "./styles";
@@ -41,16 +41,20 @@ export default function TakeTestScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Video
-        ref={video}
-        style={styles.video}
-        source={require("../../assets/videos/mainTest.mp4")}
-        useNativeControls={false}
-        resizeMode="cover"
-        shouldPlay
-        isLooping
-      />
+      <View style={{ height: 500, marginBottom: -100, marginTop: -75 }}>
+        <Video
+          ref={video}
+          style={styles.video}
+          source={require("../../assets/videos/mainTest.mp4")}
+          useNativeControls={false}
+          resizeMode="cover"
+          shouldPlay
+          isLooping
+        />
+      </View>
+
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={styles.scrollContainer}
         contentContainerStyle={styles.contentContainer}
       >
@@ -77,7 +81,7 @@ export default function TakeTestScreen({ navigation }) {
             style={styles.button}
             textColor="white"
             title="Анкетирование он-лайн"
-          ></Button>
+          />
         </View>
       </ScrollView>
     </View>

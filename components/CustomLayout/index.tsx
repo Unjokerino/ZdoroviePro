@@ -1,8 +1,7 @@
 import { path } from "ramda";
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect } from "react";
 import {
   View,
-  Text,
   Animated,
   TouchableOpacity,
   Image,
@@ -17,6 +16,7 @@ import { signOut as signOutAction } from "../../store/actions";
 import styles from "./styles";
 import selectState from "../../store/selectors/auth";
 import { IconButton } from "react-native-paper";
+import { Text } from "../../components/Themed";
 
 const SCREEN_HEIGHT = Dimensions.get("screen").height;
 
@@ -29,7 +29,6 @@ export default function CustomLayout({
 }) {
   const { identity: user } = useSelector(selectState);
   const dispatch = useDispatch();
-  const headerAnim = useRef(new Animated.Value(0)).current;
   const scrollY = new Animated.Value(0);
   const signOut = () => {
     dispatch(signOutAction());
@@ -60,28 +59,8 @@ export default function CustomLayout({
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.header,
-          {
-            height: 100,
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: 25,
-          },
-        ]}
-      >
-        <View
-          style={[
-            {
-              justifyContent: "flex-start",
-              flexDirection: "row",
-              alignItems: "center",
-              alignSelf: "center",
-              height: "100%",
-            },
-          ]}
-        >
+      <View style={[styles.header]}>
+        <View style={[styles.userInfo]}>
           <IconButton onPress={openDrawer} icon="menu" color="white" />
           <Image
             style={styles.avatar}
@@ -89,15 +68,12 @@ export default function CustomLayout({
               uri: user?.picture || "https://i.stack.imgur.com/l60Hf.png",
             }}
           />
-          <Text
-            numberOfLines={1}
-            style={[
-              styles.headerTitle,
-              { margin: 12, alignItems: "center", maxWidth: 100 },
-            ]}
-          >
-            {`${user?.email}`}
-          </Text>
+          <View style={styles.textInfoContainer}>
+            <Text style={styles.greetings}>Добро пожаловать</Text>
+            <Text numberOfLines={1} style={[styles.headerTitle]}>
+              {`${user?.email}`}
+            </Text>
+          </View>
         </View>
         <View
           style={{
@@ -107,7 +83,7 @@ export default function CustomLayout({
         >
           {renderButtons()}
         </View>
-      </Animated.View>
+      </View>
       <Animated.View
         style={[
           styles.wrapper,

@@ -40,7 +40,6 @@ export default StyleSheet.create({
     backgroundColor: "#FCFCFF",
     borderRadius: 10,
     padding: 15,
-    flex: 1,
 
     marginTop: 15,
   },

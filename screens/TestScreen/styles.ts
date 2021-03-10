@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     marginTop: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 23,
   },
   progressInfo: {
     flexDirection: "row",
@@ -32,7 +32,15 @@ const styles = StyleSheet.create({
   progressPercent: {
     fontSize: 22,
   },
-  progressCount: {},
+  progressCount: { fontSize: 12 },
+  categoryText: {
+    color: "white",
+    alignSelf: "center",
+    paddingTop: 56,
+    paddingHorizontal: 20,
+    textAlign: "center",
+    fontSize: 20,
+  },
 });
 
 export default styles;

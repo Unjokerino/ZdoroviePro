@@ -6,6 +6,9 @@ import {
   MAIN_TEST_SUCCESS,
   INCREMENT_CURRENT_CATEGORY,
   INCREMENT_CURRENT_QUESTION,
+  SECOND_TEST_FAIL,
+  SECOND_TEST_LOAD,
+  SECOND_TEST_SUCCESS,
   SHOW_SNACK_BAR,
 } from "../action-types";
 
@@ -17,6 +20,17 @@ export const getMainTest = () => async (dispatch) => {
   } catch (error) {
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
     dispatch({ type: MAIN_TEST_FAIL, error });
+  }
+};
+
+export const getSecondTest = () => async (dispatch) => {
+  dispatch({ type: SECOND_TEST_LOAD });
+  try {
+    const { data } = await api.tests.fetchSecondTest();
+    dispatch({ type: SECOND_TEST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
+    dispatch({ type: SECOND_TEST_FAIL, error });
   }
 };
 

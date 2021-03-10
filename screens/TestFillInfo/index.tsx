@@ -1,17 +1,15 @@
 import { path } from "ramda";
 import React, { useEffect, useState } from "react";
-import { Image, Text, TextInput, View } from "react-native";
+import { Image, TextInput, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import CustomSplash from "../../components/CustomSplash";
 import { RANDOM_IMAGE, TEST_FILL_INFO, TEST_SCREEN } from "../../constants";
-import { getMainTest } from "../../store/actions";
 import selectState from "../../store/selectors/tests";
-import { Question, Test } from "../../types/store/tests";
+import { Question } from "../../types/store/tests";
 import { SelectProps } from "../TakeTestScreen";
 import styles from "./styles";
 import moment from "moment";
-import { Title } from "react-native-paper";
-import Icons from "../../assets/icons";
+import { Title, Text } from "../../components/Themed";
 import Button from "../../components/Button";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
@@ -41,7 +39,6 @@ export default function TestFillInfo({ navigation }: Props) {
     currentTest
   );
   const goToTest = () => {
-    console.warn(question);
     question?.text && navigation.push(TEST_SCREEN, { ...question });
   };
 
@@ -56,8 +53,8 @@ export default function TestFillInfo({ navigation }: Props) {
       image={<Image style={styles.icon} source={{ uri: RANDOM_IMAGE }} />}
     >
       <View>
-        <Text>Дата анкетирования</Text>
-        <Title style={{ marginBottom: 20 }}>
+        <Text>Дата анкетирования:</Text>
+        <Title style={{ marginBottom: 20, fontWeight: "bold" }}>
           {moment().format("MM.DD.YYYY")}
         </Title>
         <View style={styles.inputContainer}>

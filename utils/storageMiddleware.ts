@@ -3,7 +3,6 @@ import { Middleware, Action, MiddlewareAPI } from "redux";
 
 const storeObject = async (store: MiddlewareAPI, key: string) => {
   const data = store.getState()[key];
-  console.warn(key, data);
   await AsyncStorage.setItem(key, JSON.stringify(data));
 };
 

@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Image, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Checkbox, IconButton, Subheading, Title } from "react-native-paper";
 import CustomLayout from "../../components/CustomLayout";
 import { SCREEN_WIDTH, SILVER_CONGRATULATIONS_SCREEN } from "../../constants";
 import { typography } from "../../constants/Typography";
 import styles from "./styles";
+import { Text } from "../../components/Themed";
 
 const doctorAppointments = [
   {
@@ -63,8 +64,9 @@ export default function ProfessionalExaminationScreen({ navigation }) {
     } else {
       setChecked([...checked, index]);
     }
-    console.warn(index, checked);
   };
+
+  const [currentCategory, setCurrentCategory] = useState(0);
 
   const InfoIcon = ({
     icon = "check",
@@ -79,7 +81,6 @@ export default function ProfessionalExaminationScreen({ navigation }) {
   };
 
   useEffect(() => {
-    console.warn(checked.length, doctorAppointments.length);
     if (checked.length === doctorAppointments.length) {
       navigation.navigate(SILVER_CONGRATULATIONS_SCREEN);
     }
@@ -89,7 +90,14 @@ export default function ProfessionalExaminationScreen({ navigation }) {
     <CustomLayout openDrawer={navigation.openDrawer}>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={{ color: "#6360FF", fontSize: 20, marginBottom: 15 }}>
+          <Text
+            style={{
+              color: "#6360FF",
+              fontSize: 20,
+              marginBottom: 15,
+              fontWeight: "bold",
+            }}
+          >
             Медицинские обследования для Вашего возраста и пола
           </Text>
           <Text style={[styles.screenTitle]}>Активность</Text>
@@ -98,21 +106,37 @@ export default function ProfessionalExaminationScreen({ navigation }) {
               <View style={[typography.row, styles.info]}>
                 <InfoIcon icon="check" size={20} backgroundColor="#4DD0E1" />
                 <Subheading>Врачей пройдено</Subheading>
-                <Title style={styles.infoCounter}>4</Title>
+                <Title style={styles.infoCounter}>
+                  {
+                    doctorAppointments.filter((_, i) => checked.includes(i))
+                      .length
+                  }
+                </Title>
               </View>
             </View>
           </View>
           <View style={[typography.row, styles.menuContainer]}>
-            <TouchableOpacity
-              onPress={() => scrollRef.current?.scrollTo({ x: 0 })}
-            >
-              <Text>Активно</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => scrollRef.current?.scrollToEnd()}>
-              <Text>Пройдено</Text>
-            </TouchableOpacity>
+            {["Активно", "Пройдено"].map((category, index) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    scrollRef.current?.scrollTo({ x: index * SCREEN_WIDTH });
+                    setCurrentCategory(index);
+                  }}
+                >
+                  <Text
+                    style={
+                      currentCategory === index ? { fontWeight: "bold" } : {}
+                    }
+                  >
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
           <ScrollView
+            scrollEnabled={false}
             showsHorizontalScrollIndicator={false}
             ref={scrollRef}
             style={styles.container}

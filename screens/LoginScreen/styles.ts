@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     color: "white",
     alignSelf: "center",
     fontSize: 24,
+    fontWeight: "bold",
     paddingTop: 25,
   },
   socialIcon: {

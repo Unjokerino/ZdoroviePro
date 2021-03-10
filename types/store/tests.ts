@@ -15,6 +15,7 @@ export interface Category {
   name: string;
   text: string;
   icon: string;
+  type: "Video" | "Image";
   count_question: number;
   order: number;
   questions: Question[];
@@ -25,6 +26,7 @@ export interface Option {
 }
 
 export interface Question {
+  Question_Extras: QuestionsExtra[];
   text: null | string;
   title: string;
   icon: Icon;
@@ -32,6 +34,7 @@ export interface Question {
   field?: null | string;
   type: Type;
   options?: Option[];
+  Options?: Option[];
   questionsExtra: QuestionsExtra[];
   conditions: Condition[];
 }
@@ -60,4 +63,5 @@ export enum Type {
   Variable = "variable",
   Custom = "custom",
   Radio = "radio",
+  CustomVariable = "custom-variable",
 }

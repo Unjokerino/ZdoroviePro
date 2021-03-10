@@ -17,7 +17,7 @@ export default function Custom({
   const [text, setText] = useState("");
   return (
     <View>
-      <View style={typography.row}>
+      <View style={[typography.row, { paddingHorizontal: 40 }]}>
         <Icons.EditIcon />
         <View style={{ marginLeft: 10 }} />
         <TextInput

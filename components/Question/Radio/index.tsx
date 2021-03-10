@@ -14,6 +14,7 @@ export default function Radio({
   options: Option[];
 }) {
   const [checkedIndex, setcheckedIndex] = useState(-1);
+
   const changeAnswer = (index: number) => {
     setcheckedIndex(index);
     setAnswers({ option: options[index] });

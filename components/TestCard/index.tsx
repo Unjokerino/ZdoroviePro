@@ -5,6 +5,7 @@ import {
   QUESTION_CONDITIONAL,
   QUESTION_CUSTOM,
   QUESTION_CUSTOM_CONDITIONAL,
+  QUESTION_CUSTOM_VARIABLE,
   QUESTION_RADIO,
   QUESTION_VARIABLE,
   RANDOM_IMAGE,
@@ -29,6 +30,7 @@ const TestCard = ({
   setAnswers,
   options,
   answers,
+  field,
   conditions,
 }: TestCardProps) => {
   const uri = `${MAIN_URL}/TestIcons/${icon}.png`;
@@ -51,10 +53,17 @@ const TestCard = ({
         );
       case QUESTION_CUSTOM:
         return (
-          <Question.Custom placeholder={text || ""} setAnswers={setAnswers} />
+          <Question.Custom placeholder={field || ""} setAnswers={setAnswers} />
+        );
+
+      case QUESTION_CUSTOM_VARIABLE:
+        return (
+          <Question.CustomVariable
+            conditions={conditions}
+            setAnswers={setAnswers}
+          />
         );
       case QUESTION_RADIO:
-        console.log(options);
         return (
           <Question.Radio options={options || []} setAnswers={setAnswers} />
         );

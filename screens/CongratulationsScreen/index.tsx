@@ -12,6 +12,7 @@ import {
 import { typography } from "../../constants/Typography";
 import { RootStackParamList } from "../../types";
 import * as Animatable from "react-native-animatable";
+import { Video } from "expo-av";
 
 export default function CongratulationsScreen({
   navigation,
@@ -35,13 +36,21 @@ export default function CongratulationsScreen({
           borderBottomRightRadius: 30,
           justifyContent: "center",
           alignItems: "center",
+          overflow: "hidden",
         }}
       >
-        <Animatable.Image
-          animation="bounceIn"
-          style={{ width: 201, height: 221 }}
-          resizeMode="contain"
-          source={require("../../assets/images/bronzeMedal.png")}
+        <Video
+          style={{
+            width: 201,
+            height: 221,
+            flex: 1,
+            transform: [{ scale: 1.8 }],
+          }}
+          source={require("../../assets/videos/bronze.mp4")}
+          useNativeControls={false}
+          resizeMode="cover"
+          shouldPlay
+          isLooping
         />
       </View>
       <ScrollView style={{ flex: 1 }}>

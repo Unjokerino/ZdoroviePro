@@ -4,6 +4,7 @@ import {
   DETAILED_GOAL,
   EXAMINATION_SCREEN,
   GOALS_SCREEN,
+  HEALTH_PROFILE_SCREEN,
   HOME_SCREEN,
   HOME_STACK,
   LOGIN_SCREEN,
@@ -11,6 +12,7 @@ import {
   PROFESSIONAL_PREPARATIONS_SCREEN,
   PROFILE_SCREEN,
   REGISTRATION_SCREEN,
+  SECOND_PART_DESCRIPTION_SCREEN,
   SILVER_CONGRATULATIONS_SCREEN,
   TAKE_TEST,
   TEST_FILL_INFO,
@@ -27,18 +29,24 @@ export interface TestProps {
   title: string;
   text: string | null;
   options?: Option[];
+  Options?: Option[];
   type?: Type;
+  field?: string;
 }
 
 export type RootStackParamList = {
   [TAKE_TEST]: undefined;
-  [TEST_SCREEN]: Question | undefined;
+  [TEST_SCREEN]:
+    | { question: Question; nextScreen: keyof RootStackParamList }
+    | undefined;
   [CONGRATULATIONS_SCREEN]: undefined;
   [EXAMINATION_SCREEN]: undefined;
   [PROFESSIONAL_EXAMINATION_SCREEN]: undefined;
   [TEST_FILL_INFO]: undefined;
   [PROFESSIONAL_PREPARATIONS_SCREEN]: undefined;
+  [SECOND_PART_DESCRIPTION_SCREEN]: undefined;
   [SILVER_CONGRATULATIONS_SCREEN]: undefined;
+  [HEALTH_PROFILE_SCREEN]: undefined;
 };
 
 export type BottomTabParamList = {

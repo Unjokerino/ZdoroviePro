@@ -12,7 +12,17 @@ export default createSelector(
     { test: isLoading }
   ) => {
     return {
-      currentTest,
+      currentTest: {
+        ...currentTest,
+        categories: currentTest.categories?.map((category) => ({
+          ...category,
+          questions: category.questions?.map((question) => ({
+            ...question,
+            options: question.Options,
+            questionsExtra: question?.Question_Extras,
+          })),
+        })),
+      },
       currentCategoryIndex,
       currentQuestionIndex,
       isLoading,

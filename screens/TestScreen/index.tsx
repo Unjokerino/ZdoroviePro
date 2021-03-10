@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, Image, StyleSheet } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { incrementCurrentTest } from "../../store/actions";
 import Button from "../../components/Button";
@@ -10,6 +10,7 @@ import {
   QUESTION_CONDITIONAL,
   QUESTION_CUSTOM,
   QUESTION_CUSTOM_CONDITIONAL,
+  QUESTION_CUSTOM_VARIABLE,
   QUESTION_RADIO,
   QUESTION_VARIABLE,
   SCREEN_HEIGHT,
@@ -23,9 +24,11 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
 import { path } from "ramda";
-import * as Animatable from "react-native-animatable";
+
+import { Text } from "../../components/Themed";
 
 import styles from "./styles";
+import CategoryCard from "../../components/CategoryCard";
 
 interface Props {
   navigation: StackNavigationProp<RootStackParamList, typeof TEST_SCREEN>;
@@ -91,6 +94,10 @@ export default function TestScreen({ navigation, route }: Props) {
       nextQuestion();
     }
 
+    if (question?.type !== QUESTION_CUSTOM_VARIABLE && answers.condition) {
+      nextQuestion();
+    }
+
     if (
       question?.type === QUESTION_VARIABLE &&
       answers.condition !== undefined
@@ -133,7 +140,8 @@ export default function TestScreen({ navigation, route }: Props) {
   };
 
   const question: Question | undefined =
-    route.params || path(["questions", currentQuestionIndex], category);
+    route.params?.question ||
+    path(["questions", currentQuestionIndex], category);
 
   const getNextQuestion = () => {
     const nextQuestionCard:
@@ -171,20 +179,17 @@ export default function TestScreen({ navigation, route }: Props) {
 
     const isLastQuestion =
       (category?.questions?.length || 1 - 1) === currentQuestionIndex;
-    console.log(
-      isLastQuestion,
-      currentQuestionIndex,
-      isLastCategory,
-      currentCategoryIndex
-    );
     return isLastQuestion && isLastCategory;
   };
 
   const nextQuestion = () => {
-    const extraQuestion = path(["questionsExtra", 0], question);
+    const extraQuestion: Question | undefined = path(
+      ["Question_Extras", 0],
+      question
+    );
     const isLastQuestion = checkIfLastQuestion();
     if (isLastQuestion) {
-      navigation.push(CONGRATULATIONS_SCREEN);
+      navigation.push(route.params?.nextScreen || CONGRATULATIONS_SCREEN);
       return;
     }
     if (
@@ -192,10 +197,17 @@ export default function TestScreen({ navigation, route }: Props) {
       answers.conditionalAnswer &&
       question?.type !== QUESTION_CUSTOM_CONDITIONAL
     ) {
-      navigation.replace(TEST_SCREEN, { ...extraQuestion });
+      navigation.replace(TEST_SCREEN, {
+        question: extraQuestion,
+        nextScreen: route.params?.nextScreen || CONGRATULATIONS_SCREEN,
+      });
     } else {
-      const nextQuestion = getNextQuestion();
-      nextQuestion && navigation.push(TEST_SCREEN, { ...nextQuestion });
+      const nextQuestion: Question | undefined = getNextQuestion();
+      nextQuestion &&
+        navigation.push(TEST_SCREEN, {
+          question: nextQuestion,
+          nextScreen: route.params?.nextScreen || CONGRATULATIONS_SCREEN,
+        });
       dispatch(incrementCurrentTest());
     }
   };
@@ -210,52 +222,17 @@ export default function TestScreen({ navigation, route }: Props) {
             paddingHorizontal: 16,
             flex: 1,
             marginVertical: 45,
-            height: SCREEN_HEIGHT - 240,
+            height: SCREEN_HEIGHT - 255,
           }}
         >
           {shouldShowCategory ? (
-            <View
-              style={{
-                borderRadius: 30,
-                backgroundColor: "#6360FF",
-                height: SCREEN_HEIGHT * 0.6,
-                width: "100%",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  alignSelf: "center",
-                  paddingTop: 46,
-                  paddingHorizontal: 20,
-                  textAlign: "center",
-                  fontSize: 20,
-                }}
-              >
-                {category?.text}
-              </Text>
-              <Animatable.Image
-                animation="bounceIn"
-                style={{ flex: 1, marginHorizontal: 20 }}
-                resizeMode="contain"
-                source={{ uri: `${MAIN_URL}/TestIcons/${category?.icon}.png` }}
-              />
-              <Button
-                title="Далее"
-                textColor="#6360FF"
-                backgroundColor="#fff"
-                style={{ marginVertical: 22, marginHorizontal: 35 }}
-                mode="contained"
-                onPress={() => setShouldShowCategory(false)}
-              />
-            </View>
+            <CategoryCard
+              category={category}
+              onPress={() => setShouldShowCategory(false)}
+            />
           ) : (
             <TestCard
-              title={question?.title || ""}
-              text={question?.text || ""}
-              icon={question?.icon || ""}
-              type={question?.type}
-              options={question?.options}
+              {...question}
               answers={answers}
               setAnswers={setAnswers}
               conditions={question?.conditions}

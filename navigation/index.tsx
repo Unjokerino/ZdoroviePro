@@ -25,14 +25,16 @@ import {
 import merge from "deepmerge";
 import LoginScreen from "../screens/LoginScreen";
 import TakeTestScreen from "../screens/TakeTestScreen";
-import { TestScreen } from "../screens";
+import { SecondPartDescriptionScreen, TestScreen } from "../screens";
 import {
   CONGRATULATIONS_SCREEN,
   EXAMINATION_SCREEN,
+  HEALTH_PROFILE_SCREEN,
   LOGIN_SCREEN,
   PROFESSIONAL_EXAMINATION_SCREEN,
   PROFESSIONAL_PREPARATIONS_SCREEN,
   REGISTRATION_SCREEN,
+  SECOND_PART_DESCRIPTION_SCREEN,
   SILVER_CONGRATULATIONS_SCREEN,
   TAKE_TEST,
   TEST_FILL_INFO,
@@ -53,6 +55,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { typography } from "../constants/Typography";
 import ExaminationPreparationsScreen from "../screens/ExaminationPreparationsScreen";
 import SilverCongratulationsScreen from "../screens/SilverCongratulationsScreen";
+import HealthProfileScreen from "../screens/HealthProfileScreen";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -214,7 +217,10 @@ function DrawerNavigator() {
 
 function RootNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      initialRouteName={SECOND_PART_DESCRIPTION_SCREEN}
+      screenOptions={{ headerShown: false }}
+    >
       <Stack.Screen name={TAKE_TEST} component={TakeTestScreen} />
       <Stack.Screen
         name={TEST_SCREEN}
@@ -250,6 +256,16 @@ function RootNavigator() {
       <Stack.Screen
         name={SILVER_CONGRATULATIONS_SCREEN}
         component={SilverCongratulationsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={SECOND_PART_DESCRIPTION_SCREEN}
+        component={SecondPartDescriptionScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={HEALTH_PROFILE_SCREEN}
+        component={HealthProfileScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

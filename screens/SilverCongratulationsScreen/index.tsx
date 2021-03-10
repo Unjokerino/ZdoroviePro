@@ -1,17 +1,20 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Image } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { Title, Checkbox } from "react-native-paper";
+import { Checkbox } from "react-native-paper";
 import Button from "../../components/Button";
 import {
   CONGRATULATIONS_SCREEN,
   PROFESSIONAL_EXAMINATION_SCREEN,
   PROFESSIONAL_PREPARATIONS_SCREEN,
+  SECOND_PART_DESCRIPTION_SCREEN,
 } from "../../constants";
 import { typography } from "../../constants/Typography";
 import { RootStackParamList } from "../../types";
 import * as Animatable from "react-native-animatable";
+import { Text, Title } from "../../components/Themed";
+import { Video } from "expo-av";
 
 export default function SilverCongratulationsScreen({
   navigation,
@@ -21,8 +24,8 @@ export default function SilverCongratulationsScreen({
     typeof CONGRATULATIONS_SCREEN
   >;
 }) {
-  const goToExamScreen = () => {
-    navigation.replace(PROFESSIONAL_PREPARATIONS_SCREEN);
+  const goToSecondPart = () => {
+    navigation.replace(SECOND_PART_DESCRIPTION_SCREEN);
   };
 
   return (
@@ -35,13 +38,21 @@ export default function SilverCongratulationsScreen({
           borderBottomRightRadius: 30,
           justifyContent: "center",
           alignItems: "center",
+          overflow: "hidden",
         }}
       >
-        <Animatable.Image
-          animation="bounceIn"
-          style={{ width: 201, height: 221 }}
-          resizeMode="contain"
-          source={require("../../assets/images/Silver.png")}
+        <Video
+          style={{
+            width: 201,
+            height: 221,
+            flex: 1,
+            transform: [{ scale: 1.8 }],
+          }}
+          source={require("../../assets/videos/silver.mp4")}
+          useNativeControls={false}
+          resizeMode="cover"
+          shouldPlay
+          isLooping
         />
       </View>
       <ScrollView style={{ flex: 1 }}>
@@ -84,6 +95,7 @@ export default function SilverCongratulationsScreen({
             <Title
               style={{
                 textAlign: "center",
+                fontWeight: "bold",
               }}
             >
               Ваша группа здоровья II
@@ -99,6 +111,7 @@ export default function SilverCongratulationsScreen({
               style={{
                 color: "black",
                 textAlign: "center",
+                fontSize: 14,
               }}
             >
               не установлены хронические неинфекционные заболевания, а именно:
@@ -109,7 +122,14 @@ export default function SilverCongratulationsScreen({
             </Text>
           </View>
         </View>
-        <Text style={{ padding: 20, textAlign: "center", marginBottom: 20 }}>
+        <Text
+          style={{
+            padding: 20,
+            textAlign: "center",
+            marginBottom: 20,
+            fontSize: 16,
+          }}
+        >
           Теперь ты можешь грамотно управлять своим здоровьем и получить
           персональные рекомендации
         </Text>
@@ -118,6 +138,7 @@ export default function SilverCongratulationsScreen({
           textColor="white"
           backgroundColor="#6360FF"
           title="Пройди углубленный скринииг"
+          onPress={goToSecondPart}
         />
       </ScrollView>
     </View>
