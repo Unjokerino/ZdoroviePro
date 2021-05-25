@@ -71,7 +71,7 @@ export default function CustomLayout({
           <View style={styles.textInfoContainer}>
             <Text style={styles.greetings}>Добро пожаловать</Text>
             <Text numberOfLines={1} style={[styles.headerTitle]}>
-              {`${user?.email}`}
+              {`${user?.email || ""}`}
             </Text>
           </View>
         </View>

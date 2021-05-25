@@ -8,11 +8,13 @@ import {
   CONGRATULATIONS_SCREEN,
   MAIN_URL,
   QUESTION_CONDITIONAL,
+  QUESTION_CONDITIONAL_OPTIONS,
   QUESTION_CUSTOM,
   QUESTION_CUSTOM_CONDITIONAL,
   QUESTION_CUSTOM_VARIABLE,
   QUESTION_RADIO,
   QUESTION_VARIABLE,
+  QUESTION_VARIANTS,
   SCREEN_HEIGHT,
   TEST_SCREEN,
 } from "../../constants";
@@ -72,13 +74,13 @@ export default function TestScreen({ navigation, route }: Props) {
 
   useEffect(() => {
     if (
-      question?.type === QUESTION_CONDITIONAL &&
+      question?.select?.type === QUESTION_CONDITIONAL &&
       answers.conditionalAnswer !== undefined
     ) {
       nextQuestion();
     }
     if (
-      (question?.type === QUESTION_CUSTOM_CONDITIONAL &&
+      (question?.select?.type === QUESTION_CUSTOM_CONDITIONAL &&
         answers.conditionalAnswer === false) ||
       (answers.customAnswer &&
         answers.conditionalAnswer === true &&
@@ -86,20 +88,28 @@ export default function TestScreen({ navigation, route }: Props) {
     ) {
       nextQuestion();
     }
-    if (question?.type === QUESTION_CUSTOM && answers.customAnswer) {
-      nextQuestion();
-    }
-
-    if (question?.type === QUESTION_RADIO && answers.option) {
-      nextQuestion();
-    }
-
-    if (question?.type !== QUESTION_CUSTOM_VARIABLE && answers.condition) {
+    if (question?.select?.type === QUESTION_CUSTOM && answers.customAnswer) {
       nextQuestion();
     }
 
     if (
-      question?.type === QUESTION_VARIABLE &&
+      (question?.select?.type === QUESTION_RADIO ||
+        question?.select?.type === QUESTION_CONDITIONAL_OPTIONS) &&
+      answers.option
+    ) {
+      nextQuestion();
+    }
+
+    if (
+      question?.select?.type === QUESTION_CUSTOM_VARIABLE &&
+      answers.condition
+    ) {
+      nextQuestion();
+    }
+
+    if (
+      (question?.select?.type === QUESTION_VARIABLE ||
+        question?.select?.type === QUESTION_VARIANTS) &&
       answers.condition !== undefined
     ) {
       nextQuestion();
@@ -114,7 +124,7 @@ export default function TestScreen({ navigation, route }: Props) {
   }: SelectProps = useSelector(selectState);
 
   const category: Category | undefined = path(
-    ["categories", currentCategoryIndex],
+    ["categories", currentCategoryIndex, "category"],
     currentTest
   );
 
@@ -124,9 +134,8 @@ export default function TestScreen({ navigation, route }: Props) {
       currentQuestion: currentQuestionIndex + 1,
       percent: 0,
     };
-    currentTest.categories.forEach((category, ci) => {
-      category.questions.forEach((qu, qi) => {
-        const extraQuestionLength = qu.questionsExtra.length || 0;
+    currentTest.categories?.forEach(({ category }, ci) => {
+      category.questions?.forEach(({ question: qu }, qi) => {
         if (ci === currentCategoryIndex && qi === currentQuestionIndex) {
           count.currentQuestion = count.totalQuestions + 1;
         }
@@ -141,7 +150,7 @@ export default function TestScreen({ navigation, route }: Props) {
 
   const question: Question | undefined =
     route.params?.question ||
-    path(["questions", currentQuestionIndex], category);
+    path(["questions", currentQuestionIndex, "question"], category);
 
   const getNextQuestion = () => {
     const nextQuestionCard:
@@ -151,13 +160,22 @@ export default function TestScreen({ navigation, route }: Props) {
         [
           "categories",
           currentCategoryIndex,
+          "category",
           "questions",
           currentQuestionIndex + 1,
+          "question",
         ],
         currentTest
       ) ||
       path(
-        ["categories", currentCategoryIndex + 1, "questions", 0],
+        [
+          "categories",
+          currentCategoryIndex + 1,
+          "category",
+          "questions",
+          0,
+          "question",
+        ],
         currentTest
       );
     return nextQuestionCard;
@@ -165,7 +183,7 @@ export default function TestScreen({ navigation, route }: Props) {
 
   const shouldShowNextCategory = () => {
     const firstQuestion: Question | undefined = path(
-      ["questions", 0],
+      ["questions", 0, "question"],
       category
     );
 
@@ -184,7 +202,7 @@ export default function TestScreen({ navigation, route }: Props) {
 
   const nextQuestion = () => {
     const extraQuestion: Question | undefined = path(
-      ["Question_Extras", 0],
+      ["extra_questions", 0],
       question
     );
     const isLastQuestion = checkIfLastQuestion();
@@ -195,7 +213,7 @@ export default function TestScreen({ navigation, route }: Props) {
     if (
       extraQuestion &&
       answers.conditionalAnswer &&
-      question?.type !== QUESTION_CUSTOM_CONDITIONAL
+      question?.select?.type !== QUESTION_CUSTOM_CONDITIONAL
     ) {
       navigation.replace(TEST_SCREEN, {
         question: extraQuestion,
@@ -204,7 +222,7 @@ export default function TestScreen({ navigation, route }: Props) {
     } else {
       const nextQuestion: Question | undefined = getNextQuestion();
       nextQuestion &&
-        navigation.push(TEST_SCREEN, {
+        navigation.replace(TEST_SCREEN, {
           question: nextQuestion,
           nextScreen: route.params?.nextScreen || CONGRATULATIONS_SCREEN,
         });
@@ -222,7 +240,7 @@ export default function TestScreen({ navigation, route }: Props) {
             paddingHorizontal: 16,
             flex: 1,
             marginVertical: 45,
-            height: SCREEN_HEIGHT - 255,
+            height: SCREEN_HEIGHT - 270,
           }}
         >
           {shouldShowCategory ? (
@@ -236,6 +254,7 @@ export default function TestScreen({ navigation, route }: Props) {
               answers={answers}
               setAnswers={setAnswers}
               conditions={question?.conditions}
+              nextQuestion={nextQuestion}
             />
           )}
           <View style={styles.progressContainer}>

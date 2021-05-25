@@ -1,55 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { ScrollView, Image, View, Text, LayoutChangeEvent } from "react-native";
 import {
+  Colors,
   MAIN_URL,
   QUESTION_CONDITIONAL,
+  QUESTION_CONDITIONAL_OPTIONS,
   QUESTION_CUSTOM,
   QUESTION_CUSTOM_CONDITIONAL,
+  QUESTION_CUSTOM_SELECT_CONDITIONAL,
   QUESTION_CUSTOM_VARIABLE,
   QUESTION_RADIO,
   QUESTION_VARIABLE,
+  QUESTION_VARIANTS,
   RANDOM_IMAGE,
 } from "../../constants";
 import { Answer } from "../../screens/TestScreen";
 import { TestProps } from "../../types";
 import { Condition } from "../../types/store/tests";
+import Button from "../Button";
 import Question from "../Question";
 import styles from "./styles";
 
 interface TestCardProps extends TestProps {
   setAnswers: () => void;
   conditions?: Condition[];
+  nextQuestion: () => void;
   answers: Answer;
 }
 
-const TestCard = ({
-  title,
-  text,
-  icon,
-  type,
-  setAnswers,
-  options,
-  answers,
-  field,
-  conditions,
-}: TestCardProps) => {
-  const uri = `${MAIN_URL}/TestIcons/${icon}.png`;
+const TestCard = (question: TestCardProps) => {
+  const {
+    title,
+    text,
+    icon,
+    type,
+    setAnswers,
+    options,
+    answers,
+    nextQuestion,
+    select,
+    field,
+    conditions,
+  } = question;
 
-  const renderContent = () => {
-    switch (type) {
+  const uri = `${MAIN_URL}/TestIcons/${icon?.name}.png`;
+  const renderContent = useCallback(() => {
+    switch (question.select?.type) {
       case QUESTION_CONDITIONAL:
         return <Question.Conditional setAnswers={setAnswers} />;
+
+      case QUESTION_CUSTOM_SELECT_CONDITIONAL:
       case QUESTION_CUSTOM_CONDITIONAL:
         return (
           <Question.CustomConditional
             answers={answers}
-            conditions={conditions}
+            conditions={select.options}
             setAnswers={setAnswers}
           />
         );
+      case QUESTION_VARIANTS:
       case QUESTION_VARIABLE:
         return (
-          <Question.Variable conditions={conditions} setAnswers={setAnswers} />
+          <Question.Variable
+            conditions={select.options}
+            setAnswers={setAnswers}
+          />
         );
       case QUESTION_CUSTOM:
         return (
@@ -59,18 +74,30 @@ const TestCard = ({
       case QUESTION_CUSTOM_VARIABLE:
         return (
           <Question.CustomVariable
-            conditions={conditions}
+            conditions={select.options}
             setAnswers={setAnswers}
           />
         );
+      case QUESTION_CONDITIONAL_OPTIONS:
       case QUESTION_RADIO:
         return (
-          <Question.Radio options={options || []} setAnswers={setAnswers} />
+          <Question.Radio
+            options={select.options || []}
+            setAnswers={setAnswers}
+          />
         );
       default:
-        return <View />;
+        return (
+          <View>
+            <Button
+              textColor={Colors.light.header}
+              onPress={nextQuestion}
+              title="Пропустить"
+            />
+          </View>
+        );
     }
-  };
+  }, [question]);
   const renderTitle = () => {
     return title ? <Text style={styles.title}>{title}</Text> : <View />;
   };
@@ -97,4 +124,4 @@ const TestCard = ({
   );
 };
 
-export default TestCard;
+export default memo(TestCard);

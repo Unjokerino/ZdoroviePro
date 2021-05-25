@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { MAIN_URL, SCREEN_HEIGHT } from "../../constants";
+import { IS_IOS, MAIN_URL, SCREEN_HEIGHT } from "../../constants";
 import Button from "../Button";
 import * as Animatable from "react-native-animatable";
 import { Video } from "expo-av";
@@ -15,29 +15,29 @@ export default function CategoryCard({
   onPress: () => void;
 }) {
   const renderContent = () => {
-    switch ("Video") {
-      case "Image":
+    switch (category?.icon?.icon_type) {
+      case "image":
         return (
           <Animatable.Image
             animation="bounceIn"
             style={{ flex: 1 }}
             resizeMode="contain"
             source={{
-              uri: `${MAIN_URL}/TestIcons/${category?.icon}.png`,
+              uri: `${MAIN_URL}/TestIcons/${category?.icon?.name}.png`,
             }}
           />
         );
-      case "Video":
+      case "video":
         return (
           <Video
             style={{
               width: "100%",
               height: "100%",
               flex: 1,
-              transform: [{ scale: 1.3 }],
+              transform: [{ scale: IS_IOS ? 1 : 1.3 }],
             }}
             source={{
-              uri: `${MAIN_URL}/TestIcons/${category?.icon}.mp4`,
+              uri: `${MAIN_URL}/TestIcons/${category?.icon?.name}.mp4`,
             }}
             useNativeControls={false}
             resizeMode="cover"

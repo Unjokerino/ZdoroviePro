@@ -1,11 +1,9 @@
-import { Picker } from "@react-native-picker/picker";
-import React, { ReactChild, useCallback, useState } from "react";
-import { View, Text, TextInput } from "react-native";
-import { IconButton } from "react-native-paper";
+import { path, pathOr } from "ramda";
+import React, { useState } from "react";
+import { View, TextInput } from "react-native";
 import Icons from "../../../assets/icons";
 import { typography } from "../../../constants/Typography";
-import { Answer } from "../../../screens/TestScreen";
-import { Condition } from "../../../types/store/tests";
+import { Condition, Question } from "../../../types/store/tests";
 import Button from "../../Button";
 import { styles } from "./styles";
 
@@ -19,7 +17,7 @@ export default function CustomVariable({
   const [text, setText] = useState("");
   const [currentCondition, setCurrentCondtition] = useState<Condition>();
   const changeValue = (condition: Condition) => {
-    if (condition.questionsExtra) {
+    if (condition.Question_Extras && condition.Question_Extras[0]) {
       setCurrentCondtition(condition);
     } else {
       setAnswers({ condition });
@@ -32,35 +30,43 @@ export default function CustomVariable({
 
   return (
     <View>
-      {text && (
+      {!!text && (
         <Button
-          style={{ marginBottom: 10 }}
+          style={{ marginBottom: 20 }}
           title="Далее"
-          mode="contained"
+          mode="outlined"
           onPress={compliteQuestion}
         />
       )}
-      {conditions?.map((condition) => (
-        <View>
-          <Button
-            style={styles.button}
-            title={condition.text}
-            mode={condition.text === "НЕТ" ? "outlined" : "contained"}
-            onPress={() => changeValue(condition)}
-          />
-          {condition.questionsExtra[0] && (
-            <View style={[typography.row, { paddingHorizontal: 40 }]}>
-              <Icons.EditIcon />
-              <View style={{ marginLeft: 10 }} />
-              <TextInput
-                value={text}
-                placeholder={condition.questionsExtra[0]}
-                onChangeText={setText}
-              />
-            </View>
-          )}
-        </View>
-      ))}
+      {conditions?.map((condition) => {
+        const shouldShowExtra: Question | boolean = pathOr(
+          false,
+          ["extra_questions", 0],
+          condition
+        );
+        return (
+          <View>
+            <Button
+              style={styles.button}
+              title={condition.title}
+              mode={condition.title === "НЕТ" ? "outlined" : "contained"}
+              onPress={() => changeValue(condition)}
+            />
+            {shouldShowExtra && currentCondition?.text === condition.text && (
+              <View style={[typography.row, { paddingHorizontal: 40 }]}>
+                <Icons.EditIcon />
+                <View style={{ marginLeft: 10 }} />
+                <TextInput
+                  value={text}
+                  style={{ minWidth: 100, backgroundColor: "#f1f1f1" }}
+                  placeholder={shouldShowExtra?.text}
+                  onChangeText={setText}
+                />
+              </View>
+            )}
+          </View>
+        );
+      })}
     </View>
   );
 }

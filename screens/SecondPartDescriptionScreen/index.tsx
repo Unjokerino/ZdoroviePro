@@ -4,6 +4,7 @@ import { Paragraph, Title } from "../../components/Themed";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Colors,
+  DESCRIPTION_SCREEN,
   HEALTH_PROFILE_SCREEN,
   TEST_FILL_INFO,
   TEST_SCREEN,
@@ -43,7 +44,7 @@ export default function TakeTestScreen({ navigation }) {
   const goToTest = () => {
     navigation.replace(TEST_SCREEN, {
       question: question,
-      nextScreen: HEALTH_PROFILE_SCREEN,
+      nextScreen: DESCRIPTION_SCREEN,
     });
   };
 

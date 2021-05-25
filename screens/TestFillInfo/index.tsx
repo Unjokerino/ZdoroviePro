@@ -35,7 +35,14 @@ export default function TestFillInfo({ navigation }: Props) {
   }: SelectProps = useSelector(selectState);
 
   const question: Question | undefined = path(
-    ["categories", currentCategoryIndex, "questions", currentQuestionIndex],
+    [
+      "categories",
+      currentCategoryIndex,
+      "category",
+      "questions",
+      currentQuestionIndex,
+      "question",
+    ],
     currentTest
   );
   const goToTest = () => {

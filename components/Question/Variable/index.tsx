@@ -16,8 +16,8 @@ export default function Conditional({
       {conditions.map((condition) => (
         <Button
           style={styles.button}
-          title={condition.text}
-          mode={condition.text === "НЕТ" ? "outlined" : "contained"}
+          title={condition.title}
+          mode={condition.title === "НЕТ" ? "outlined" : "contained"}
           onPress={() => setAnswers({ condition })}
         />
       ))}

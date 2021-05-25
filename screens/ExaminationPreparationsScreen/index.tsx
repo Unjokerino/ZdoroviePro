@@ -9,11 +9,10 @@ import {
 import * as Animatable from "react-native-animatable";
 import Button from "../../components/Button";
 import CustomLayout from "../../components/CustomLayout";
-import { Picker } from "@react-native-picker/picker";
-import { IconButton } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { typography } from "../../constants/Typography";
 import { RadioButton } from "react-native-paper";
+import RNPickerSelect from "react-native-picker-select";
 
 const clinics = [
   "ГАУЗ ГП №21 (студенческая)",
@@ -106,17 +105,16 @@ export default function ExaminationPreparationsScreen({ navigation }) {
                   height: 50,
                   borderColor: "#6360FF",
                   borderRadius: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <Picker
-                  onValueChange={setSelectedValue}
-                  selectedValue={selectedValue}
+                <RNPickerSelect
                   style={{ height: 50, flex: 1 }}
-                >
-                  {clinics.map((condition) => (
-                    <Picker.Item label={condition} value={condition} />
-                  ))}
-                </Picker>
+                  selectedValue={selectedValue}
+                  onValueChange={setSelectedValue}
+                  items={clinics.map((item) => ({ label: item, value: item }))}
+                />
               </View>
               <View
                 style={{

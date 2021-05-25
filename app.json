@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
@@ -27,8 +27,9 @@
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#6360FF"
       },
+
       "permissions": [],
-      "versionCode": 2,
+      "versionCode": 3,
       "package": "com.mironov.healthpro"
     },
     "web": {

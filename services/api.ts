@@ -1,4 +1,5 @@
 import {
+  GOALS_URL,
   RANDOM_USER_URL,
   SECOND_TEST_URL,
   SIGN_IN_URL,
@@ -17,5 +18,8 @@ export default {
       ssoInstance.post(SIGN_IN_URL, params),
     signUp: (params: { email: string; password: string }) =>
       ssoInstance.post(SIGN_UP_URL, params),
+  },
+  goals: {
+    fetchGoals: () => healthProInstance.get(GOALS_URL),
   },
 };

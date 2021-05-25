@@ -8,17 +8,24 @@ export interface Test {
   id: string;
   name: string;
   text: string;
-  categories: Category[];
+  categories: {
+    categories: Category[];
+    order: number;
+  }[];
 }
 
 export interface Category {
   name: string;
   text: string;
   icon: string;
-  type: "Video" | "Image";
+  type: "video" | "image";
+  icon_type: "video" | "image";
   count_question: number;
   order: number;
-  questions: Question[];
+  questions: {
+    question: Question[];
+    order: number;
+  };
 }
 export interface Option {
   id: string;
@@ -31,6 +38,13 @@ export interface Question {
   title: string;
   icon: Icon;
   order?: number;
+  select: {
+    group_options: [];
+    id: string;
+    option_custom: null | string;
+    options: Option[];
+    type: Type;
+  };
   field?: null | string;
   type: Type;
   options?: Option[];
@@ -43,6 +57,7 @@ export interface Condition {
   text: string;
   next_question: number | null;
   questionsExtra: any[];
+  Question_Extras: Question[];
 }
 
 export enum Icon {
@@ -61,6 +76,8 @@ export enum Type {
   Conditional = "conditional",
   CustomConditional = "custom-conditional",
   Variable = "variable",
+  Variants = "variants",
+  CustomSelectConditional = "custom-select-conditional",
   Custom = "custom",
   Radio = "radio",
   CustomVariable = "custom-variable",

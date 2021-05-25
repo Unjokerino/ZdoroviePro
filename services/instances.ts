@@ -8,11 +8,12 @@ export const ssoInstance = axios.create();
 healthProInstance.interceptors.request.use(async (config) => {
   const {
     authReducer: {
-      identity: { token },
+      identity: { access_token },
     },
   } = store.getState();
+
   config.headers = {
-    Authorization: token ? token : "",
+    Authorization: access_token ? `Bearer ${access_token}` : "",
   };
   return config;
 });

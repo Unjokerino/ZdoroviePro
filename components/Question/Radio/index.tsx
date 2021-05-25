@@ -29,11 +29,11 @@ export default function Radio({
           <RadioButton
             color="#6360FF"
             onPress={() => changeAnswer(index)}
-            value={option.text}
+            value={option.title}
             status={index === checkedIndex ? "checked" : "unchecked"}
           />
           <Text style={{ paddingRight: 40, marginLeft: 10 }}>
-            {option.text}
+            {option.title}
           </Text>
         </TouchableOpacity>
       ))}

@@ -28,7 +28,7 @@ export interface User {
   email: string;
   createdAt: string;
   updatedAt: string;
-  token: string;
+  access_token: string;
 }
 
 export interface Dob {

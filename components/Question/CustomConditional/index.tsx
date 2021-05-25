@@ -1,5 +1,5 @@
 import { Picker } from "@react-native-picker/picker";
-import React, { ReactChild, useCallback, useState } from "react";
+import React, { ReactChild, useCallback, useRef, useState } from "react";
 import { View, Text, TextInput } from "react-native";
 import { IconButton } from "react-native-paper";
 import Icons from "../../../assets/icons";
@@ -7,9 +7,9 @@ import { Answer } from "../../../screens/TestScreen";
 import { Condition } from "../../../types/store/tests";
 import Button from "../../Button";
 import { styles } from "./styles";
+import RNPickerSelect from "react-native-picker-select";
 
 const TEST_CONDITIONS = [
-  "какое",
   "легкого",
   "желудка",
   "кишечника",
@@ -24,19 +24,7 @@ const TEST_CONDITIONS = [
 
 export default function Conditional({
   setAnswers,
-  conditions = [
-    "какое",
-    "легкого",
-    "желудка",
-    "кишечника",
-    "толстой или прямой кишки",
-    "предстательной железы",
-    "молочной железы",
-    "матки",
-    "опухоли других локализаций",
-    "полипоз желудка",
-    "семейный аденоматоз/диффузный полипоз толстой кишки",
-  ],
+  conditions,
   answers,
 }: {
   setAnswers: (_: any) => void;
@@ -48,6 +36,8 @@ export default function Conditional({
     setSelectedValue(customAnswer);
     setAnswers((prev: Answer) => ({ ...prev, customAnswer }));
   };
+  const pickerRef = useRef(null);
+
   return (
     <View>
       <Button
@@ -67,17 +57,24 @@ export default function Conditional({
           }}
         >
           <Icons.EditIcon />
-          {answers.conditionalAnswer && (
-            <Picker
-              onValueChange={changePickerValue}
-              selectedValue={selectedValue}
-              style={{ height: 50, flex: 1 }}
-            >
-              {TEST_CONDITIONS.map((condition) => (
-                <Picker.Item label={condition} value={condition} />
-              ))}
-            </Picker>
-          )}
+          <View
+            style={{
+              minWidth: 150,
+            }}
+          >
+            {answers.conditionalAnswer && (
+              <RNPickerSelect
+                ref={pickerRef}
+                placeholder="какое"
+                onValueChange={changePickerValue}
+                selectedValue={selectedValue}
+                items={TEST_CONDITIONS.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+              />
+            )}
+          </View>
         </View>
       )}
       <Button

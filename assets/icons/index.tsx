@@ -17,6 +17,10 @@ import EditIcon from "./Edit";
 import Google from "./Google";
 import Vk from "./Vk";
 import Apple from "./Apple";
+import Graph from "./Graph";
+import Activity from "./Activity";
+import Smoking from "./Smoking";
+import Food from "./Food";
 
 export default {
   AwardIcon,
@@ -38,4 +42,8 @@ export default {
   Google,
   Vk,
   Apple,
+  Graph,
+  Food,
+  Smoking,
+  Activity,
 };

@@ -9,6 +9,8 @@ import {
   DrawerContentScrollView,
   DrawerItemList,
   DrawerItem,
+  DrawerContentComponentProps,
+  DrawerContentOptions,
 } from "@react-navigation/drawer";
 import LinkingConfiguration from "./LinkingConfiguration";
 import {
@@ -19,16 +21,27 @@ import {
 import {
   DarkTheme as PaperDarkTheme,
   DefaultTheme as PaperDefaultTheme,
+  IconButton,
   Provider as PaperProvider,
   Snackbar,
 } from "react-native-paper";
 import merge from "deepmerge";
 import LoginScreen from "../screens/LoginScreen";
 import TakeTestScreen from "../screens/TakeTestScreen";
-import { SecondPartDescriptionScreen, TestScreen } from "../screens";
+import {
+  GoalsScreen,
+  SecondPartDescriptionScreen,
+  TestScreen,
+} from "../screens";
 import {
   CONGRATULATIONS_SCREEN,
+  DESCRIPTION_SCREEN,
+  DETAILED_GOAL,
+  DETAILED_GOAL_SCREEN,
   EXAMINATION_SCREEN,
+  GOALS_SCREEN,
+  GOAL_DESCRIPTION,
+  GOAL_INFO,
   HEALTH_PROFILE_SCREEN,
   LOGIN_SCREEN,
   PROFESSIONAL_EXAMINATION_SCREEN,
@@ -47,7 +60,7 @@ import CongratulationsScreen from "../screens/CongratulationsScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { signIn, showSnackBar, hideSnackBar } from "../store/actions";
 import { RootState } from "../types/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import init from "../utils/init";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import TestFillInfo from "../screens/TestFillInfo";
@@ -56,6 +69,11 @@ import { typography } from "../constants/Typography";
 import ExaminationPreparationsScreen from "../screens/ExaminationPreparationsScreen";
 import SilverCongratulationsScreen from "../screens/SilverCongratulationsScreen";
 import HealthProfileScreen from "../screens/HealthProfileScreen";
+import DescriptionScreen from "../screens/DescriptionScreen";
+import DetailedGoalScreen from "../screens/DetailedGoalScreen";
+import GoalDescription from "../screens/DetailedGoalScreen/GoalDescription";
+import GoalInfo from "../screens/DetailedGoalScreen/GoalInfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -86,7 +104,7 @@ export default function Navigation({
   return (
     <PaperProvider theme={theme}>
       <NavigationContainer linking={LinkingConfiguration} theme={theme}>
-        {identity.email ? <DrawerNavigator /> : <LoginNavigator />}
+        {identity.access_token ? <DrawerNavigator /> : <LoginNavigator />}
       </NavigationContainer>
       <Snackbar
         visible={shouldShowSnackBar}
@@ -129,7 +147,9 @@ function LoginNavigator() {
 
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent() {
+function CustomDrawerContent(
+  props: DrawerContentComponentProps<DrawerContentOptions>
+) {
   const circle = {
     width: 50,
     height: 50,
@@ -138,11 +158,17 @@ function CustomDrawerContent() {
   };
   return (
     <View style={{ flex: 1 }}>
+      <IconButton
+        onPress={() => props.navigation.closeDrawer()}
+        icon="close"
+        color="#000"
+        style={{ marginTop: 20 }}
+      />
       <Text
         style={{
           alignSelf: "center",
           textAlign: "center",
-          marginTop: 77,
+          marginTop: 50,
           fontWeight: "700",
           marginBottom: 36,
         }}
@@ -207,7 +233,7 @@ function CustomDrawerContent() {
 function DrawerNavigator() {
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent />}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       initialRouteName="Home"
     >
       <Drawer.Screen name="Home" component={RootNavigator} />
@@ -218,13 +244,18 @@ function DrawerNavigator() {
 function RootNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName={SECOND_PART_DESCRIPTION_SCREEN}
+      initialRouteName={TAKE_TEST}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name={TAKE_TEST} component={TakeTestScreen} />
       <Stack.Screen
         name={TEST_SCREEN}
         component={TestScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={GOAL_DESCRIPTION}
+        component={GoalDescription}
         options={{ headerShown: false }}
       />
       <Stack.Screen
@@ -235,6 +266,21 @@ function RootNavigator() {
       <Stack.Screen
         name={PROFESSIONAL_EXAMINATION_SCREEN}
         component={ProfessionalExaminationScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={GOALS_SCREEN}
+        component={GoalsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={DETAILED_GOAL}
+        component={DetailedGoalScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={GOAL_INFO}
+        component={GoalInfo}
         options={{ headerShown: false }}
       />
 
@@ -266,6 +312,11 @@ function RootNavigator() {
       <Stack.Screen
         name={HEALTH_PROFILE_SCREEN}
         component={HealthProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={DESCRIPTION_SCREEN}
+        component={DescriptionScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

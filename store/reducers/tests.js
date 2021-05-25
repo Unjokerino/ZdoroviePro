@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
     case MAIN_TEST_SUCCESS:
     case SECOND_TEST_SUCCESS:
       return {
-        ...state,
+        ...initialState,
         currentTest: { ...state.currentTest, ...action.payload },
       };
     case INCREMENT_CURRENT_QUESTION:

@@ -16,6 +16,7 @@ export const getMainTest = () => async (dispatch) => {
   dispatch({ type: MAIN_TEST_LOAD });
   try {
     const { data } = await api.tests.fetchMainTest();
+
     dispatch({ type: MAIN_TEST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
@@ -27,6 +28,7 @@ export const getSecondTest = () => async (dispatch) => {
   dispatch({ type: SECOND_TEST_LOAD });
   try {
     const { data } = await api.tests.fetchSecondTest();
+
     dispatch({ type: SECOND_TEST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
@@ -42,7 +44,7 @@ export const incrementCurrentTest = () => (dispatch, getState) => {
     const currentCategories = currentTest.categories || [];
     const currentQuestions = pathOr(
       [],
-      ["categories", currentCategoryIndex, "questions"],
+      ["categories", currentCategoryIndex, "category", "questions"],
       currentTest
     );
 

@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   },
 
   caption: {
+    color: "black",
     fontWeight: "bold",
     paddingLeft: 4,
     fontSize: 16,

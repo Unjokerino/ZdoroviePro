@@ -14,14 +14,7 @@ export default createSelector(
     return {
       currentTest: {
         ...currentTest,
-        categories: currentTest.categories?.map((category) => ({
-          ...category,
-          questions: category.questions?.map((question) => ({
-            ...question,
-            options: question.Options,
-            questionsExtra: question?.Question_Extras,
-          })),
-        })),
+        categories: currentTest.categories?.sort((a, b) => a.order - b.order),
       },
       currentCategoryIndex,
       currentQuestionIndex,
