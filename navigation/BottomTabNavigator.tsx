@@ -1,5 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 
@@ -7,32 +5,29 @@ import Colors from "../constants/Colors";
 import {
   ACHIEVEMENTS_SCREEN,
   DETAILED_GOAL,
-  EXAMINATION_SCREEN,
+  DETAILED_GOAL_STACK,
   GOALS_SCREEN,
+  GOAL_DESCRIPTION,
+  GOAL_INFO,
   HOME_SCREEN,
-  HOME_STACK,
-  PROFESSIONAL_EXAMINATION_SCREEN,
   PROFILE_SCREEN,
+  RATING_MODAL,
   SCREEN_WIDTH,
   TAKE_TEST,
   TEST_SCREEN,
 } from "../constants";
 import useColorScheme from "../hooks/useColorScheme";
-
-import { BottomTabParamList, HomeTabParamList } from "../types";
-import { GoalsScreen, HomeScreen } from "../screens";
-import { TouchableOpacity, View } from "react-native";
+import { HomeTabParamList } from "../types";
+import { GoalsScreen } from "../screens";
+import { TouchableOpacity, View, StyleSheet } from "react-native";
 import Icons from "../assets/icons";
 import { BottomNavigation, Text } from "react-native-paper";
 import DetailedGoalScreen from "../screens/DetailedGoalScreen";
-import TakeTestScreen from "../screens/TakeTestScreen";
-import TestScreen from "../screens/TestScreen";
-import ExaminationScreen from "../screens/ExaminationScreen";
-import ProfessionalExaminationScreen from "../screens/ProfessionalExaminationScreen";
+import GoalDescription from "../screens/DetailedGoalScreen/GoalDescription";
+import GoalInfo from "../screens/DetailedGoalScreen/GoalInfo";
+import RatingModal from "../components/RatingModal";
 
 const EmptyComponent = () => <View />;
-
-const BottomTab = createBottomTabNavigator<BottomTabParamList>();
 
 export default function BottomTabNavigator() {
   const [index, setIndex] = React.useState(0);
@@ -46,9 +41,9 @@ export default function BottomTabNavigator() {
   ]);
   const renderScene = BottomNavigation.SceneMap({
     [HOME_SCREEN]: HomeNavigator,
-    [PROFILE_SCREEN]: ProfessionalExaminationScreen,
+    [PROFILE_SCREEN]: EmptyComponent,
     [ACHIEVEMENTS_SCREEN]: EmptyComponent,
-    [GOALS_SCREEN]: GoalsScreen,
+    [GOALS_SCREEN]: EmptyComponent,
   });
 
   const renderIcon = (color: string, { key }: { key: string }) => {
@@ -70,18 +65,8 @@ export default function BottomTabNavigator() {
     <BottomNavigation
       activeColor={Colors[colorScheme].tint}
       inactiveColor="black"
-      barStyle={{
-        width: SCREEN_WIDTH,
-        borderTopStartRadius: 30,
-        borderTopEndRadius: 30,
-        height: 70,
-        elevation: 0,
-        backgroundColor: "white",
-        justifyContent: "center",
-      }}
-      style={{
-        backgroundColor: "transparent",
-      }}
+      barStyle={styles.barStyle}
+      style={styles.bottomTab}
       renderTouchable={(props) => {
         return (
           <TouchableOpacity onPress={props.onPress} style={{ flex: 1 }}>
@@ -99,44 +84,63 @@ export default function BottomTabNavigator() {
   return customTabBar();
 }
 
+const GoalStack = createStackNavigator();
+
+function GoalNavigator() {
+  return (
+    <GoalStack.Navigator mode="modal" headerMode="none">
+      <GoalStack.Screen
+        name={DETAILED_GOAL}
+        component={DetailedGoalScreen}
+        options={{ headerShown: false }}
+      />
+      <GoalStack.Screen
+        name={RATING_MODAL}
+        component={RatingModal}
+        options={{ headerShown: false }}
+      />
+    </GoalStack.Navigator>
+  );
+}
+
 const HomeStack = createStackNavigator<HomeTabParamList>();
 
 const HomeNavigator = () => (
   <HomeStack.Navigator>
-    <HomeStack.Screen
-      name={HOME_STACK}
-      component={HomeScreen}
-      options={{ headerShown: false }}
-    />
-    <HomeStack.Screen
-      name={DETAILED_GOAL}
-      component={DetailedGoalScreen}
-      options={{ headerShown: false }}
-    />
     <HomeStack.Screen
       name={GOALS_SCREEN}
       component={GoalsScreen}
       options={{ headerShown: false }}
     />
     <HomeStack.Screen
-      name={TAKE_TEST}
-      component={TakeTestScreen}
+      name={DETAILED_GOAL_STACK}
+      component={GoalNavigator}
       options={{ headerShown: false }}
     />
     <HomeStack.Screen
-      name={TEST_SCREEN}
-      component={TestScreen}
+      name={GOAL_INFO}
+      component={GoalInfo}
       options={{ headerShown: false }}
     />
     <HomeStack.Screen
-      name={EXAMINATION_SCREEN}
-      component={ExaminationScreen}
-      options={{ headerShown: false }}
-    />
-    <HomeStack.Screen
-      name={PROFESSIONAL_EXAMINATION_SCREEN}
-      component={ProfessionalExaminationScreen}
+      name={GOAL_DESCRIPTION}
+      component={GoalDescription}
       options={{ headerShown: false }}
     />
   </HomeStack.Navigator>
 );
+
+const styles = StyleSheet.create({
+  barStyle: {
+    width: SCREEN_WIDTH,
+    borderTopStartRadius: 30,
+    borderTopEndRadius: 30,
+    height: 70,
+    elevation: 0,
+    backgroundColor: "white",
+    justifyContent: "center",
+  },
+  bottomTab: {
+    backgroundColor: "transparent",
+  },
+});

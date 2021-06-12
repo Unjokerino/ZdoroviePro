@@ -58,6 +58,9 @@ export interface Condition {
   next_question: number | null;
   questionsExtra: any[];
   Question_Extras: Question[];
+  title?: string;
+  order?: number;
+  type?: string;
 }
 
 export enum Icon {

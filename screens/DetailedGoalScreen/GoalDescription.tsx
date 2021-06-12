@@ -162,7 +162,7 @@ export default function GoalDescription(props) {
               paddingVertical: 20,
             }}
           >
-            {params.howItWorks}
+            {params.motivation_description}
           </Text>
         </Modal>
       </Portal>

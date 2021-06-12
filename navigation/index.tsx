@@ -1,13 +1,11 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { ColorSchemeName, Text, View } from "react-native";
-import NotFoundScreen from "../screens/NotFoundScreen";
 import { LoginStackParamList, RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
-  DrawerItemList,
   DrawerItem,
   DrawerContentComponentProps,
   DrawerContentOptions,
@@ -28,20 +26,11 @@ import {
 import merge from "deepmerge";
 import LoginScreen from "../screens/LoginScreen";
 import TakeTestScreen from "../screens/TakeTestScreen";
-import {
-  GoalsScreen,
-  SecondPartDescriptionScreen,
-  TestScreen,
-} from "../screens";
+import { SecondPartDescriptionScreen, TestScreen } from "../screens";
 import {
   CONGRATULATIONS_SCREEN,
   DESCRIPTION_SCREEN,
-  DETAILED_GOAL,
-  DETAILED_GOAL_SCREEN,
   EXAMINATION_SCREEN,
-  GOALS_SCREEN,
-  GOAL_DESCRIPTION,
-  GOAL_INFO,
   HEALTH_PROFILE_SCREEN,
   LOGIN_SCREEN,
   PROFESSIONAL_EXAMINATION_SCREEN,
@@ -58,9 +47,9 @@ import ProfessionalExaminationScreen from "../screens/ProfessionalExaminationScr
 import CongratulationsScreen from "../screens/CongratulationsScreen";
 
 import { useDispatch, useSelector } from "react-redux";
-import { signIn, showSnackBar, hideSnackBar } from "../store/actions";
+import { hideSnackBar } from "../store/actions";
 import { RootState } from "../types/store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import init from "../utils/init";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import TestFillInfo from "../screens/TestFillInfo";
@@ -70,10 +59,6 @@ import ExaminationPreparationsScreen from "../screens/ExaminationPreparationsScr
 import SilverCongratulationsScreen from "../screens/SilverCongratulationsScreen";
 import HealthProfileScreen from "../screens/HealthProfileScreen";
 import DescriptionScreen from "../screens/DescriptionScreen";
-import DetailedGoalScreen from "../screens/DetailedGoalScreen";
-import GoalDescription from "../screens/DetailedGoalScreen/GoalDescription";
-import GoalInfo from "../screens/DetailedGoalScreen/GoalInfo";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -92,6 +77,7 @@ export default function Navigation({
     authReducer: { identity },
     systemReducer: { shouldShowSnackBar, snackBarMessage },
   } = useSelector((state: RootState) => state);
+
   const onDismissSnackBar = () => dispatch(hideSnackBar());
 
   useEffect(() => {
@@ -236,12 +222,16 @@ function DrawerNavigator() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       initialRouteName="Home"
     >
-      <Drawer.Screen name="Home" component={RootNavigator} />
+      <Drawer.Screen name="Home" component={BottomTabNavigator} />
     </Drawer.Navigator>
   );
 }
 
-function RootNavigator() {
+const GoalsStack = createStackNavigator();
+
+function GoalsNavigator() {}
+
+function TestNavigator() {
   return (
     <Stack.Navigator
       initialRouteName={TAKE_TEST}
@@ -253,11 +243,7 @@ function RootNavigator() {
         component={TestScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name={GOAL_DESCRIPTION}
-        component={GoalDescription}
-        options={{ headerShown: false }}
-      />
+
       <Stack.Screen
         name={EXAMINATION_SCREEN}
         component={ExaminationScreen}
@@ -266,21 +252,6 @@ function RootNavigator() {
       <Stack.Screen
         name={PROFESSIONAL_EXAMINATION_SCREEN}
         component={ProfessionalExaminationScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={GOALS_SCREEN}
-        component={GoalsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={DETAILED_GOAL}
-        component={DetailedGoalScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={GOAL_INFO}
-        component={GoalInfo}
         options={{ headerShown: false }}
       />
 

@@ -7,7 +7,7 @@ import {
   Image,
   Text,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styles from "./styles";
 import { Colors, Button, Title } from "react-native-paper";
 import Progress from "../Progress";
@@ -16,46 +16,67 @@ export interface GoalProps {
   style?: StyleProp<ViewStyle>;
   title: string;
   duration: number;
-  progress?: number;
+  complete_days?: number;
   fullDescription: string;
+  rules_description: string;
+  preview_description: string;
+  motivation_description: string;
+  status?: string;
+  id: string;
   goal: string;
   howItWorks: string;
   buttonText: string;
   background: string;
   description?: string;
   onPress?: any;
-  active?: boolean;
 }
 
 export default function RecomendedGoalCard({
   style,
   title,
-  progress = 20,
+  complete_days = 20,
   duration = 60,
   description = "",
   onPress,
-  active,
+  status,
 }: GoalProps) {
+  const active = status === "active";
+  const [translatedTitle, setTranslatedTitle] = useState();
   const ProgressView = () => (
     <View style={styles.progressBar}>
       <View style={styles.progressInfo}>
-        <Text style={styles.text}>{progress} дней уже пройдено</Text>
+        <Text style={styles.text}>{complete_days} дней уже пройдено</Text>
         <Text style={styles.percent}>{`${Math.round(
-          (progress / duration) * 100
+          (complete_days / duration) * 100
         )}%`}</Text>
       </View>
 
-      <Progress value={progress} />
+      <Progress value={complete_days} />
     </View>
   );
+
+  const Status = useCallback(() => {
+    switch (status) {
+      case "active":
+        return <Text style={styles.inProgress}>В работе</Text>;
+      case "failed":
+        return <Text style={styles.failed}>В работе</Text>;
+
+      default:
+        return <View />;
+    }
+  }, [status]);
+
   const Description = () => (
     <View>
-      <Text style={styles.description}>{description}</Text>
+      <Text numberOfLines={4} style={styles.description}>
+        {description}
+      </Text>
     </View>
   );
   return (
     <View style={[styles.container, style]}>
-      {active && <Text style={styles.inProgress}>В работе</Text>}
+      <Status />
       <View style={styles.card}>
         <Title numberOfLines={1} style={styles.title}>
           {title}

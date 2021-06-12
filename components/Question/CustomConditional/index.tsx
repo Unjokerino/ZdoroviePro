@@ -8,6 +8,7 @@ import { Condition } from "../../../types/store/tests";
 import Button from "../../Button";
 import { styles } from "./styles";
 import RNPickerSelect from "react-native-picker-select";
+import { IS_IOS } from "../../../constants";
 
 const TEST_CONDITIONS = [
   "легкого",
@@ -28,7 +29,7 @@ export default function Conditional({
   answers,
 }: {
   setAnswers: (_: any) => void;
-  conditions?: Condition[] | string[];
+  conditions?: Condition[];
   answers: Answer;
 }) {
   const [selectedValue, setSelectedValue] = useState("какое");
@@ -37,7 +38,10 @@ export default function Conditional({
     setAnswers((prev: Answer) => ({ ...prev, customAnswer }));
   };
   const pickerRef = useRef(null);
-
+  const options: string[] =
+    conditions && conditions.length > 0
+      ? conditions.map((item) => item.title)
+      : TEST_CONDITIONS;
   return (
     <View>
       <Button
@@ -62,17 +66,26 @@ export default function Conditional({
               minWidth: 150,
             }}
           >
-            {answers.conditionalAnswer && (
+            {IS_IOS ? (
               <RNPickerSelect
                 ref={pickerRef}
-                placeholder="какое"
+                placeholder={{ label: "какое" }}
                 onValueChange={changePickerValue}
-                selectedValue={selectedValue}
-                items={TEST_CONDITIONS.map((item) => ({
+                items={options.map((item) => ({
                   label: item,
                   value: item,
                 }))}
               />
+            ) : (
+              <Picker
+                selectedValue={selectedValue}
+                style={{ height: 50, width: 150 }}
+                onValueChange={changePickerValue}
+              >
+                {options.map((item) => (
+                  <Picker.Item label={item} value={item} />
+                ))}
+              </Picker>
             )}
           </View>
         </View>

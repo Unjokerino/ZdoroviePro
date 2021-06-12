@@ -25,3 +25,22 @@ export const PRELOAD_DONE = "PRELOAD_DONE";
 
 export const SHOW_SNACK_BAR = "SHOW_SNACK_BAR";
 export const HIDE_SNACK_BAR = "HIDE_SNACK_BAR";
+
+export const GOALS_LOAD = "GOALS_LOAD";
+export const GOALS_SUCCESS = "GOALS_SUCCESS";
+export const GOALS_FAIL = "GOALS_FAIL";
+
+export const USER_GOALS_LOAD = "USER_GOALS_LOAD";
+export const USER_GOALS_SUCCESS = "USER_GOALS_SUCCESS";
+export const USER_GOALS_FAIL = "USER_GOALS_FAIL";
+
+export const UPDATE_TASK_LOAD = "UPDATE_TASK_LOAD";
+export const UPDATE_TASK_SUCCESS = "UPDATE_TASK_SUCCESS";
+export const UPDATE_TASK_FAIL = "UPDATE_TASK_FAIL";
+
+export const TASK_LOAD = "TASK_LOAD";
+export const TASK_SUCCESS = "TASK_SUCCESS";
+export const TASK_FAIL = "TASK_FAIL";
+
+export const SET_CURRENT_GOAL = "SET_CURRENT_GOAL";
+export const SET_CURRENT_GOAL_FAIL = "SET_CURRENT_GOAL_FAIL";

@@ -1,21 +1,147 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
 import { Modal, Portal, Title } from "react-native-paper";
+import { useDispatch, useSelector } from "react-redux";
 import Button from "../../components/Button";
+import { RATING_MODAL } from "../../constants";
+import { RootState } from "../../types/store";
+//@ts-ignore
+import { getUserTask } from "../../store/actions";
 
-export default function DetailedGoalScreen(props) {
-  const { params } = props.route;
+export default function DetailedGoalScreen() {
   const [visible, setVisible] = React.useState(false);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const showModal = () => setVisible(true);
+
   const hideModal = () => setVisible(false);
+  const {
+    authReducer: { identity },
+    goalsReducer: { currentGoal },
+  } = useSelector((state: RootState) => state);
+
+  const { complete_days, duration } = currentGoal?.purpose;
+
+  const closeGoal = () => {
+    hideModal();
+  };
+
+  const leaveRating = () => {
+    navigation.navigate(RATING_MODAL);
+  };
+
+  useEffect(() => {
+    dispatch(getUserTask());
+  }, []);
+
+  const threes = [
+    [
+      {
+        source: require("../../assets/images/smokeGoal/11.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/12.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/13.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/14.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/15.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/16.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/17.png"),
+      },
+    ],
+    [
+      {
+        source: require("../../assets/images/smokeGoal/21.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/22.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/23.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/24.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/25.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/26.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/27.png"),
+      },
+    ],
+    [
+      {
+        source: require("../../assets/images/smokeGoal/31.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/32.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/33.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/34.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/35.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/36.png"),
+      },
+      {
+        source: require("../../assets/images/smokeGoal/37.png"),
+      },
+    ],
+  ];
+  const defaultImage = require("../../assets/images/smokeBackground.png");
   return (
     <ScrollView>
-      <Image
-        style={{ height: 300, width: "100%" }}
+      <ImageBackground
+        style={{
+          height: 300,
+          width: "100%",
+          flexDirection: "row",
+          alignItems: "flex-end",
+        }}
         resizeMode="stretch"
-        source={params?.background}
-      />
+        source={currentGoal?.background || defaultImage}
+      >
+        {threes.map((three, index) => {
+          return (
+            <Image
+              style={{
+                height: 200,
+                width: 100,
+                left: 10 + index * 25,
+                bottom: 50 + index * 8,
+              }}
+              resizeMode="contain"
+              source={three[0].source}
+            />
+          );
+        })}
+      </ImageBackground>
       <View
         style={{
           marginTop: -20,
@@ -25,7 +151,7 @@ export default function DetailedGoalScreen(props) {
           alignItems: "center",
         }}
       >
-        <Title>День 1</Title>
+        <Title>День {complete_days}</Title>
         <Text style={{ fontWeight: "bold" }}>Каждый день я побеждаю</Text>
         <View
           style={{
@@ -39,17 +165,20 @@ export default function DetailedGoalScreen(props) {
             borderColor: "#CFD8DC",
           }}
         >
-          <Text style={{ fontWeight: "bold", fontSize: 34 }}>0%</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 34 }}>
+            {Math.round((complete_days || 0 / duration) * 100)}%
+          </Text>
         </View>
         <Button
           onPress={showModal}
           style={{ width: "100%" }}
           backgroundColor="#FF8181"
           textColor="#fff"
-          title={params.buttonText}
+          title={"Хочу курить"}
         />
       </View>
       <TouchableOpacity
+        onPress={leaveRating}
         style={{
           backgroundColor: "#fff",
           flexDirection: "row",
@@ -156,7 +285,7 @@ export default function DetailedGoalScreen(props) {
               Я хочу продолжить
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={hideModal}>
+          <TouchableOpacity onPress={closeGoal}>
             <Text>Закурить и сбросить таймер</Text>
           </TouchableOpacity>
         </Modal>

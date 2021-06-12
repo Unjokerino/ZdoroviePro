@@ -44,6 +44,17 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     zIndex: 1,
   },
+  failed: {
+    alignSelf: "flex-end",
+    marginRight: 35,
+    backgroundColor: "#fff",
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    color: "red",
+    marginBottom: -20,
+    borderRadius: 6,
+    zIndex: 1,
+  },
   text: {
     color: "#fff",
   },

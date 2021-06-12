@@ -17,21 +17,20 @@ import styles from "./styles";
 import selectState from "../../store/selectors/auth";
 import { IconButton } from "react-native-paper";
 import { Text } from "../../components/Themed";
+import { useNavigation } from "@react-navigation/native";
 
 const SCREEN_HEIGHT = Dimensions.get("screen").height;
 
-export default function CustomLayout({
-  children,
-  openDrawer,
-}: {
-  children: ReactElement;
-  openDrawer: (_: any) => void;
-}) {
+export default function CustomLayout({ children }: { children: ReactElement }) {
+  const navigation = useNavigation();
   const { identity: user } = useSelector(selectState);
   const dispatch = useDispatch();
   const scrollY = new Animated.Value(0);
   const signOut = () => {
     dispatch(signOutAction());
+  };
+  const openDrawer = () => {
+    navigation.openDrawer();
   };
   const renderButtons = () => (
     <View style={styles.iconButtonContainer}>

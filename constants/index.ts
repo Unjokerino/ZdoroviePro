@@ -11,6 +11,7 @@ export const GOALS_SCREEN = "Цели";
 export const HOME_STACK = "Home Stack";
 export const DETAILED_GOAL = "Detailed Goal";
 export const GOAL_INFO = "Goal Info";
+export const DETAILED_GOAL_STACK = "DETAILED_GOAL_STACK";
 export const TAKE_TEST = "Пройти тест";
 export const TEST_SCREEN = "Тест";
 export const GOAL_DESCRIPTION = "Информация о Цели";
@@ -26,6 +27,7 @@ export const DESCRIPTION_SCREEN = "DESCRIPTION_SCREEN";
 export const LOGIN_SCREEN = "Логин";
 export const REGISTRATION_SCREEN = "Регистрация";
 export const TEST_FILL_INFO = "Заполните информацию для теста";
+export const RATING_MODAL = "RATING_MODAL";
 
 // Test Cards
 export const QUESTION_CONDITIONAL = "conditional";
@@ -55,4 +57,5 @@ export const MAIN_TEST_URL = `${MAIN_URL_API}/tests/a2df3ac9-b68b-4f94-aaf0-ccef
 export const SECOND_TEST_URL = `${MAIN_URL_API}/tests/35c4071e-73c3-4652-a475-dce105986025`;
 export const SIGN_IN_URL = `${MAIN_URL_AUTH}/sign-in`;
 export const SIGN_UP_URL = `${MAIN_URL_AUTH}/sign-up`;
-export const GOALS_URL = `${MAIN_URL_API}/users/`;
+export const GOALS_URL = `${MAIN_URL_API}/purpose`;
+export const USERS_URL = `${MAIN_URL_API}/users`;

@@ -3,23 +3,37 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Modal, Portal, Title } from "react-native-paper";
 import Button from "../../components/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { GoalProps } from "../../components/RecomendedGoalCard";
 import { Colors, DETAILED_GOAL } from "../../constants";
+import { RootState } from "../../types/store";
+import api from "../../services/api";
 
-export default function GoalInfo(props) {
+export default function GoalInfo(props: { route: { params: GoalProps } }) {
   const { params } = props.route;
   const navigation = useNavigation();
+  const {
+    authReducer: { identity },
+  } = useSelector((state: RootState) => state);
+  const startTheGoal = async () => {
+    console.warn(identity);
+    const { data } = await api.goals.startGoal(params.id, identity.id);
+
+    navigation.replace(DETAILED_GOAL, params);
+  };
+
   return (
     <View style={styles.root}>
       <Text style={styles.text}>Цель</Text>
       <Title style={styles.text}>{params.title}</Title>
-      <Text style={styles.description}>{params.fullDescription}</Text>
+      <Text style={styles.description}>{params.preview_description}</Text>
       <View style={styles.card}>
         <Text style={styles.bold}>Правила игры.</Text>
-        <Text style={styles.cardText}>{params.goal}</Text>
+        <Text style={styles.cardText}>{params.rules_description}</Text>
       </View>
 
       <Button
-        onPress={() => navigation.replace(DETAILED_GOAL, params)}
+        onPress={startTheGoal}
         style={styles.button}
         textColor="#fff"
         backgroundColor="#FF8181"

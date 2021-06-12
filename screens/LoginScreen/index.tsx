@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ImageBackground,
   Image,
@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TouchableOpacity,
+  Keyboard,
 } from "react-native";
 
 import { View, Caption, Title } from "../../components/Themed";
@@ -29,6 +30,10 @@ export default function TestScreen({ navigation }) {
   const [password, setPassword] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [isValidEmail, setIsValidEmail] = useState<boolean | undefined>();
+  const [keyboardIsShown, setKeyboardIsShown] = useState<boolean>();
+  const _keyboardDidShow = () => setKeyboardIsShown(true);
+  const _keyboardDidHide = () => setKeyboardIsShown(false);
+
   const signIn = () => {
     if (email && password && isValidEmail) {
       dispatch(signInAction({ email, password }));
@@ -74,6 +79,17 @@ export default function TestScreen({ navigation }) {
     alert("Данный тип авторизации недоступен на данный момент.");
   };
 
+  useEffect(() => {
+    Keyboard.addListener("keyboardDidShow", _keyboardDidShow);
+    Keyboard.addListener("keyboardDidHide", _keyboardDidHide);
+
+    // cleanup function
+    return () => {
+      Keyboard.removeListener("keyboardDidShow", _keyboardDidShow);
+      Keyboard.removeListener("keyboardDidHide", _keyboardDidHide);
+    };
+  }, []);
+
   return (
     <KeyboardAvoidingView behavior={keyboardBehavior} style={styles.container}>
       <ImageBackground
@@ -87,7 +103,18 @@ export default function TestScreen({ navigation }) {
         />
         <Title style={styles.title}>Здоровье PRO</Title>
 
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.wrapper}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={[
+            styles.wrapper,
+            keyboardIsShown && {
+              position: "absolute",
+              top: 0,
+              right: 0,
+              left: 0,
+            },
+          ]}
+        >
           <View
             style={[
               styles.inputContainer,
