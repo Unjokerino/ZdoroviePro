@@ -37,17 +37,11 @@ export default function TakeTestScreen({ navigation }) {
     ["categories", currentCategoryIndex, "questions", currentQuestionIndex],
     currentTest
   );
-  const [status, setStatus] = useState<boolean>(false);
+
   const disabled = isLoading && !!question;
   useEffect(() => {
-    fetchTestStatus();
     dispatch(getMainTest());
   }, []);
-
-  const fetchTestStatus = async () => {
-    const status = !!(await AsyncStorage.getItem("testDone"));
-    if (status) navigation.replace(GOALS_SCREEN);
-  };
 
   const goToTest = () => {
     navigation.replace(TEST_FILL_INFO, { ...question });

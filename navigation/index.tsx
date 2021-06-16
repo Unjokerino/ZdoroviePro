@@ -47,6 +47,7 @@ import ProfessionalExaminationScreen from "../screens/ProfessionalExaminationScr
 import CongratulationsScreen from "../screens/CongratulationsScreen";
 
 import { useDispatch, useSelector } from "react-redux";
+//@ts-ignore
 import { hideSnackBar } from "../store/actions";
 import { RootState } from "../types/store";
 import { useEffect } from "react";
@@ -59,6 +60,7 @@ import ExaminationPreparationsScreen from "../screens/ExaminationPreparationsScr
 import SilverCongratulationsScreen from "../screens/SilverCongratulationsScreen";
 import HealthProfileScreen from "../screens/HealthProfileScreen";
 import DescriptionScreen from "../screens/DescriptionScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -217,12 +219,26 @@ function CustomDrawerContent(
 }
 
 function DrawerNavigator() {
+  const [testStatus, setTestStatus] = React.useState(false);
+
+  const fetchTestStatus = async () => {
+    const status = !!(await AsyncStorage.getItem("testDone"));
+    setTestStatus(status);
+  };
+
+  useEffect(() => {
+    fetchTestStatus();
+  }, []);
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       initialRouteName="Home"
     >
-      <Drawer.Screen name="Home" component={BottomTabNavigator} />
+      {testStatus ? (
+        <Drawer.Screen name="Home" component={BottomTabNavigator} />
+      ) : (
+        <Drawer.Screen name="Home" component={TestNavigator} />
+      )}
     </Drawer.Navigator>
   );
 }
