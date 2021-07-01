@@ -67,7 +67,7 @@ export default function TakeTestScreen({ navigation }) {
         style={styles.scrollContainer}
         contentContainerStyle={styles.contentContainer}
       >
-        <Title style={styles.title}>УРОВЕНЬ II</Title>
+        <Title style={styles.title}>Углубленный скрининг</Title>
         <View style={styles.paragraphContainer}>
           <Paragraph style={styles.subtitle}>Управление здоровьем</Paragraph>
           <Paragraph style={styles.paragraph}>

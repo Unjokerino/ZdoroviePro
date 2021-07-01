@@ -11,8 +11,9 @@ import Button from "../../components/Button";
 import CustomLayout from "../../components/CustomLayout";
 import { MaterialIcons } from "@expo/vector-icons";
 import { typography } from "../../constants/Typography";
-import { RadioButton } from "react-native-paper";
+
 import RNPickerSelect from "react-native-picker-select";
+import RadioButton from "../../components/RadioButton";
 
 const clinics = [
   "ГАУЗ ГП №21 (студенческая)",
@@ -196,7 +197,6 @@ export default function ExaminationPreparationsScreen({ navigation }) {
             </View>
             <View style={typography.row}>
               <RadioButton
-                color="#FF8181"
                 status={checked ? "checked" : "unchecked"}
                 onPress={() => setChecked(!checked)}
               />

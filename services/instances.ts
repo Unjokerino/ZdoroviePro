@@ -29,7 +29,10 @@ healthProInstance.interceptors.response.use(
     const isUnauthorized = response.status === 403 || response.status === 401;
     if (response && isUnauthorized && !originalRequest._retry) {
       originalRequest._retry = true;
+      setTimeout(() => {
+        return healthProInstance(originalRequest);
+      }, 1000);
+      store.dispatch(signOut());
     }
-    store.dispatch(signOut());
   }
 );

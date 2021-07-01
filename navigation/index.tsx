@@ -31,10 +31,12 @@ import {
   CONGRATULATIONS_SCREEN,
   DESCRIPTION_SCREEN,
   EXAMINATION_SCREEN,
+  GOALS_SCREEN,
   HEALTH_PROFILE_SCREEN,
   LOGIN_SCREEN,
   PROFESSIONAL_EXAMINATION_SCREEN,
   PROFESSIONAL_PREPARATIONS_SCREEN,
+  RECOMENDATION_SCREEN,
   REGISTRATION_SCREEN,
   SECOND_PART_DESCRIPTION_SCREEN,
   SILVER_CONGRATULATIONS_SCREEN,
@@ -50,7 +52,7 @@ import { useDispatch, useSelector } from "react-redux";
 //@ts-ignore
 import { hideSnackBar } from "../store/actions";
 import { RootState } from "../types/store";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import init from "../utils/init";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import TestFillInfo from "../screens/TestFillInfo";
@@ -61,6 +63,7 @@ import SilverCongratulationsScreen from "../screens/SilverCongratulationsScreen"
 import HealthProfileScreen from "../screens/HealthProfileScreen";
 import DescriptionScreen from "../screens/DescriptionScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import RecomendationScreen from "../screens/RecomendationScreen";
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -250,7 +253,7 @@ function GoalsNavigator() {}
 function TestNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName={TAKE_TEST}
+      initialRouteName={HEALTH_PROFILE_SCREEN}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name={TAKE_TEST} component={TakeTestScreen} />
@@ -270,7 +273,11 @@ function TestNavigator() {
         component={ProfessionalExaminationScreen}
         options={{ headerShown: false }}
       />
-
+      <Stack.Screen
+        name={GOALS_SCREEN}
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen
         name={CONGRATULATIONS_SCREEN}
         component={CongratulationsScreen}
@@ -289,6 +296,11 @@ function TestNavigator() {
       <Stack.Screen
         name={SILVER_CONGRATULATIONS_SCREEN}
         component={SilverCongratulationsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={RECOMENDATION_SCREEN}
+        component={RecomendationScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen

@@ -231,7 +231,7 @@ export default function TestScreen({ navigation, route }: Props) {
   };
 
   return (
-    <CustomLayout openDrawer={navigation.openDrawer}>
+    <CustomLayout disableScroll={true}>
       {isLoading ? (
         <ActivityIndicator />
       ) : (
@@ -240,12 +240,11 @@ export default function TestScreen({ navigation, route }: Props) {
             paddingHorizontal: 16,
             flex: 1,
             marginVertical: 45,
-            height: SCREEN_HEIGHT - 270,
           }}
         >
           {shouldShowCategory ? (
             <CategoryCard
-              category={category}
+              category={category!}
               onPress={() => setShouldShowCategory(false)}
             />
           ) : (

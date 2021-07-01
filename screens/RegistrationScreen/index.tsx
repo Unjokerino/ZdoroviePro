@@ -1,14 +1,16 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, TextInput, Text, Linking } from "react-native";
-import { RadioButton, Title, Checkbox } from "react-native-paper";
+import { Checkbox } from "react-native-paper";
 import { View } from "../../components/Themed";
 import styles from "./styles";
 import Icons from "../../assets/icons";
 import Button from "../../components/Button";
 import { IS_IOS, REGISTRATION_SCREEN } from "../../constants";
+
 import {
   signUp as signUpAction,
   signIn as signInAction,
+  //@ts-ignore
 } from "../../store/actions";
 import { useDispatch } from "react-redux";
 import moment from "moment";
@@ -19,6 +21,7 @@ import { typography } from "../../constants/Typography";
 import CustomSplash from "../../components/CustomSplash";
 import { TextInputMask } from "react-native-masked-text";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import RadioButton from "../../components/RadioButton";
 
 const keyboardBehavior = IS_IOS ? "padding" : "height";
 

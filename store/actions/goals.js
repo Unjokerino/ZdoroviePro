@@ -33,7 +33,9 @@ export const getUserGoals = () => async (dispatch, state) => {
   dispatch({ type: USER_GOALS_LOAD });
   try {
     const id = store.getState().authReducer.identity.id;
+
     const { data } = await api.users.fetchGoals(id);
+
     dispatch({ type: USER_GOALS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });

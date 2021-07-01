@@ -35,7 +35,7 @@ import api from "../../services/api";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../types/store";
-import { getUserGoals, setCurrentGoal } from "../../store/actions";
+import { getUserGoals, setCurrentGoal, getGoals } from "../../store/actions";
 
 export default function GoalsScreen() {
   const navigation = useNavigation();
@@ -44,13 +44,14 @@ export default function GoalsScreen() {
   const [value, setValue] = useState(0);
   const {
     authReducer: { identity },
-    goalsReducer: { userGoals },
+    goalsReducer: { userGoals, goals },
   } = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
   useEffect(() => {
     scroll.addListener(({ value }) => setValue(value));
     dispatch(getUserGoals());
+    dispatch(getGoals());
   }, []);
 
   const goToGoal = (item) => {
@@ -62,10 +63,9 @@ export default function GoalsScreen() {
   };
 
   const renderContent = () => (
-    <CustomLayout openDrawer={navigation.openDrawer}>
+    <CustomLayout>
       <View style={styles.content}>
         <FlatList
-          initialScrollIndex={1}
           showsHorizontalScrollIndicator={false}
           data={userGoals}
           renderItem={({ item }) => (
@@ -80,6 +80,20 @@ export default function GoalsScreen() {
         />
 
         <View style={styles.divider}></View>
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          data={goals}
+          renderItem={({ item }) => (
+            <RecomendedGoalCard
+              style={styles.card}
+              onPress={() => goToGoal(item)}
+              {...item}
+            />
+          )}
+          keyExtractor={(item) => item.title}
+          style={styles.scrollContainer}
+        />
+
       </View>
     </CustomLayout>
   );

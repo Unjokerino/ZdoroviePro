@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Image, ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Checkbox, IconButton, Subheading, Title } from "react-native-paper";
+import { IconButton, Subheading, Title } from "react-native-paper";
 import CustomLayout from "../../components/CustomLayout";
 import { SCREEN_WIDTH, SILVER_CONGRATULATIONS_SCREEN } from "../../constants";
 import { typography } from "../../constants/Typography";
 import styles from "./styles";
 import { Text } from "../../components/Themed";
+import Checkbox from "../../components/Checkbox";
 
 const doctorAppointments = [
   {

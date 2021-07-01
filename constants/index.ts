@@ -25,6 +25,7 @@ export const SECOND_PART_DESCRIPTION_SCREEN = "SECOND_PART_DESCRIPTION_SCREEN";
 export const HEALTH_PROFILE_SCREEN = "HEALTH_PROFILE_SCREEN";
 export const DESCRIPTION_SCREEN = "DESCRIPTION_SCREEN";
 export const LOGIN_SCREEN = "Логин";
+export const RECOMENDATION_SCREEN = 'RecomendationScreen';
 export const REGISTRATION_SCREEN = "Регистрация";
 export const TEST_FILL_INFO = "Заполните информацию для теста";
 export const RATING_MODAL = "RATING_MODAL";

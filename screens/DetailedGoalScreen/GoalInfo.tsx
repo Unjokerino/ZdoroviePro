@@ -16,10 +16,10 @@ export default function GoalInfo(props: { route: { params: GoalProps } }) {
     authReducer: { identity },
   } = useSelector((state: RootState) => state);
   const startTheGoal = async () => {
-    console.warn(identity);
-    const { data } = await api.goals.startGoal(params.id, identity.id);
+   
+    const props = await api.goals.startGoal(params.id, identity.id);
 
-    navigation.replace(DETAILED_GOAL, params);
+    navigation.navigate(DETAILED_GOAL, params);
   };
 
   return (
@@ -35,6 +35,7 @@ export default function GoalInfo(props: { route: { params: GoalProps } }) {
       <Button
         onPress={startTheGoal}
         style={styles.button}
+        mode="contained"
         textColor="#fff"
         backgroundColor="#FF8181"
         title="Давай приступим"

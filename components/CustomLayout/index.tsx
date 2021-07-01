@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Icons from "../../assets/icons";
-import { Colors, RANDOM_USER_URL } from "../../constants";
+import { Colors, IS_IOS, RANDOM_USER_URL } from "../../constants";
 import { signOut as signOutAction } from "../../store/actions";
 import styles from "./styles";
 import selectState from "../../store/selectors/auth";
@@ -21,7 +21,13 @@ import { useNavigation } from "@react-navigation/native";
 
 const SCREEN_HEIGHT = Dimensions.get("screen").height;
 
-export default function CustomLayout({ children }: { children: ReactElement }) {
+export default function CustomLayout({
+  children,
+  disableScroll = false,
+}: {
+  children: ReactElement;
+  disableScroll?: boolean;
+}) {
   const navigation = useNavigation();
   const { identity: user } = useSelector(selectState);
   const dispatch = useDispatch();
@@ -47,7 +53,7 @@ export default function CustomLayout({ children }: { children: ReactElement }) {
   );
 
   useEffect(() => {
-    StatusBar.setBackgroundColor(Colors.light.header);
+    !IS_IOS && StatusBar.setBackgroundColor(Colors.light.header);
   }, []);
 
   const borderRadius = scrollY.interpolate({
@@ -92,28 +98,33 @@ export default function CustomLayout({ children }: { children: ReactElement }) {
           },
         ]}
       >
-        <ScrollView
-          nestedScrollEnabled
-          scrollEventThrottle={16}
-          style={styles.scrollView}
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    y: scrollY,
+        {disableScroll ? (
+          <View style={styles.scrollView}>{children}</View>
+        ) : (
+          <ScrollView
+            nestedScrollEnabled
+            scrollEventThrottle={16}
+            scrollEnabled={!disableScroll}
+            style={styles.scrollView}
+            onScroll={Animated.event(
+              [
+                {
+                  nativeEvent: {
+                    contentOffset: {
+                      y: scrollY,
+                    },
                   },
                 },
-              },
-            ],
-            {
-              useNativeDriver: false,
-            }
-          )}
-          showsVerticalScrollIndicator={false}
-        >
-          {children}
-        </ScrollView>
+              ],
+              {
+                useNativeDriver: false,
+              }
+            )}
+            showsVerticalScrollIndicator={false}
+          >
+            {children}
+          </ScrollView>
+        )}
       </Animated.View>
     </View>
   );
