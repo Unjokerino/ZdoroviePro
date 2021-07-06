@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { path, pathOr } from "ramda";
+import { pathOr } from "ramda";
 import api from "../../services/api";
 import jwt_decode from "jwt-decode";
 
@@ -31,8 +31,9 @@ export const signIn =
     try {
       const { data } = await api.auth.signIn({ email, password });
       const decoded = jwt_decode(data.access_token);
+
       const id = decoded.sub;
-      const identity = { id, ...data };
+      const identity = { ...decoded, ...data };
       dispatch({ type: SIGN_IN_SUCCESS, payload: identity });
     } catch (error) {
       const errorMsg = pathOr(

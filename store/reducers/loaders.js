@@ -13,6 +13,9 @@ import {
 const initialState = {
   test: false,
   auth: false,
+  goals: false,
+  userGoals: false,
+  userTask: false,
 };
 
 const set = (value, state) => (loader) => ({ ...state, [loader]: value });

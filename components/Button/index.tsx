@@ -1,16 +1,26 @@
 import React from "react";
-import { TouchableOpacity, StyleProp, ViewStyle } from "react-native";
+import {
+  TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+  ActivityIndicator,
+} from "react-native";
 import { styles } from "./styles";
 import { Text } from "../Themed";
+import { Colors } from "../../constants";
 const Button = ({
   title,
   onPress,
   mode,
   style,
+  disabled,
+  loading,
   backgroundColor,
   textColor,
 }: {
+  loading: boolean;
   title: string;
+  disabled: boolean;
   onPress: (_: any) => void;
   mode: "outlined" | "contained";
   style?: StyleProp<ViewStyle>;
@@ -28,15 +38,19 @@ const Button = ({
       ]}
       onPress={onPress}
     >
-      <Text
-        style={[
-          styles[textStyle],
-          { textAlign: "center", fontWeight: "bold", fontSize: 17 },
-          textColor ? { color: textColor } : {},
-        ]}
-      >
-        {title}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={Colors.light.header} />
+      ) : (
+        <Text
+          style={[
+            styles[textStyle],
+            { textAlign: "center", fontWeight: "bold", fontSize: 17 },
+            textColor ? { color: textColor } : {},
+          ]}
+        >
+          {title}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };

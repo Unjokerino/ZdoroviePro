@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { ScrollView, Image, View, Text, LayoutChangeEvent } from "react-native";
+import { ScrollView, Image, View, LayoutChangeEvent, Text } from "react-native";
 import {
   Colors,
   MAIN_URL,
@@ -9,45 +9,39 @@ import {
   QUESTION_CUSTOM_CONDITIONAL,
   QUESTION_CUSTOM_SELECT_CONDITIONAL,
   QUESTION_CUSTOM_VARIABLE,
+  QUESTION_GROUP_OPTIONS,
   QUESTION_RADIO,
   QUESTION_VARIABLE,
   QUESTION_VARIANTS,
+  QUSETION_CUSTOM_VARIANTS,
   RANDOM_IMAGE,
 } from "../../constants";
 import { Answer } from "../../screens/TestScreen";
-import { TestProps } from "../../types";
-import { Condition } from "../../types/store/tests";
+import { Condition, Question as QuestionProps } from "../../types/store/tests";
 import Button from "../Button";
 import Question from "../Question";
 import styles from "./styles";
 
-interface TestCardProps extends TestProps {
+interface TestCardProps extends QuestionProps {
   setAnswers: () => void;
-  conditions?: Condition[];
-  nextQuestion: () => void;
+  nextQuestion: (answer: Answer) => void;
   answers: Answer;
 }
 
 const TestCard = (question: TestCardProps) => {
-  const {
-    title,
-    text,
-    icon,
-    type,
-    setAnswers,
-    options,
-    answers,
-    nextQuestion,
-    select,
-    field,
-    conditions,
-  } = question;
+  const { title, text, icon, setAnswers, answers, nextQuestion, select } =
+    question;
 
   const uri = `${MAIN_URL}/TestIcons/${icon?.name}.png`;
   const renderContent = useCallback(() => {
     switch (question.select?.type) {
       case QUESTION_CONDITIONAL:
-        return <Question.Conditional setAnswers={setAnswers} />;
+        return (
+          <Question.Conditional
+            nextQuestion={nextQuestion}
+            setAnswers={setAnswers}
+          />
+        );
 
       case QUESTION_CUSTOM_SELECT_CONDITIONAL:
       case QUESTION_CUSTOM_CONDITIONAL:
@@ -56,19 +50,19 @@ const TestCard = (question: TestCardProps) => {
             answers={answers}
             conditions={select.options}
             setAnswers={setAnswers}
+            nextQuestion={nextQuestion}
           />
         );
       case QUESTION_VARIANTS:
       case QUESTION_VARIABLE:
-        return (
-          <Question.Variable
-            conditions={select.options}
-            setAnswers={setAnswers}
-          />
-        );
+        return <Question.Variable {...question} />;
       case QUESTION_CUSTOM:
         return (
-          <Question.Custom placeholder={field || ""} setAnswers={setAnswers} />
+          <Question.Custom
+            nextQuestion={nextQuestion}
+            placeholder={"введите значение"}
+            setAnswers={setAnswers}
+          />
         );
 
       case QUESTION_CUSTOM_VARIABLE:
@@ -76,6 +70,7 @@ const TestCard = (question: TestCardProps) => {
           <Question.CustomVariable
             conditions={select.options}
             setAnswers={setAnswers}
+            nextQuestion={nextQuestion}
           />
         );
       case QUESTION_CONDITIONAL_OPTIONS:
@@ -84,14 +79,19 @@ const TestCard = (question: TestCardProps) => {
           <Question.Radio
             options={select.options || []}
             setAnswers={setAnswers}
+            nextQuestion={nextQuestion}
           />
         );
+      case QUSETION_CUSTOM_VARIANTS:
+        return <Question.CustomVariants {...question} />;
+      case QUESTION_GROUP_OPTIONS:
+        return <Question.GroupOptions {...question} />;
       default:
         return (
           <View>
             <Button
               textColor={Colors.light.header}
-              onPress={nextQuestion}
+              onPress={() => nextQuestion({})}
               title="Пропустить"
             />
           </View>
@@ -117,6 +117,7 @@ const TestCard = (question: TestCardProps) => {
       <View style={styles.iconContainer}>
         <Image style={styles.icon} resizeMode="contain" source={{ uri }} />
       </View>
+
       {renderTitle()}
       {renderSubTitle()}
       {renderContent()}

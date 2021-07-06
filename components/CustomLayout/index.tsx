@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Icons from "../../assets/icons";
-import { Colors, IS_IOS, RANDOM_USER_URL } from "../../constants";
+import { Colors, IS_IOS } from "../../constants";
 import { signOut as signOutAction } from "../../store/actions";
 import styles from "./styles";
 import selectState from "../../store/selectors/auth";

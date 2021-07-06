@@ -12,6 +12,12 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
   },
+  box: {
+    height: 150,
+    width: 150,
+    backgroundColor: "blue",
+    borderRadius: 5,
+  },
   paragraph: {
     textAlign: "left",
     alignSelf: "center",
@@ -48,7 +54,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     alignItems: "center",
     justifyContent: "center",
-
+    backgroundColor: Colors.light.background,
     flexGrow: 1,
   },
   buttonContainer: {

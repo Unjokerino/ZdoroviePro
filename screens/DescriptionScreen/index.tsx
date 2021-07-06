@@ -15,6 +15,8 @@ import { Question, Test } from "../../types/store/tests";
 import { path } from "ramda";
 import Button from "../../components/Button";
 import { Video, AVPlaybackStatus } from "expo-av";
+import { RootState } from "../../types/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 export interface SelectProps {
   currentTest: Test;
   currentCategoryIndex: number;
@@ -36,8 +38,15 @@ export default function DescriptionScreen({ navigation }) {
     currentTest
   );
   const disabled = isLoading && !!question;
+
+  const {
+    testsReducer: { answers },
+  } = useSelector((state: RootState) => state);
+
   useEffect(() => {
-    dispatch(getSecondTest());
+    AsyncStorage.setItem("testResults", JSON.stringify(answers));
+    AsyncStorage.setItem("testDone", "true");
+    // dispatch(getSecondTest());
   }, []);
 
   const goToTest = () => {

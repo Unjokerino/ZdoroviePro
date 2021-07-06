@@ -1,25 +1,28 @@
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { Modal, Portal, Title } from "react-native-paper";
+import { View, Text, StyleSheet } from "react-native";
+import { Title } from "react-native-paper";
 import Button from "../../components/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { GoalProps } from "../../components/RecomendedGoalCard";
 import { Colors, DETAILED_GOAL } from "../../constants";
 import { RootState } from "../../types/store";
-import api from "../../services/api";
+//@ts-ignore
+import { startUserGoal } from "../../store/actions";
 
-export default function GoalInfo(props: { route: { params: GoalProps } }) {
+export default function GoalInfo(props: {
+  route: { params: GoalProps };
+  navigation;
+}) {
+  const { navigation } = props;
   const { params } = props.route;
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const {
     authReducer: { identity },
   } = useSelector((state: RootState) => state);
   const startTheGoal = async () => {
-   
-    const props = await api.goals.startGoal(params.id, identity.id);
+    dispatch(startUserGoal());
 
-    navigation.navigate(DETAILED_GOAL, params);
+    navigation.replace(DETAILED_GOAL, params);
   };
 
   return (

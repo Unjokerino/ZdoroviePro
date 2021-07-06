@@ -10,9 +10,11 @@ import { typography } from "../../../constants/Typography";
 export default function Custom({
   setAnswers,
   placeholder = "",
+  nextQuestion,
 }: {
   setAnswers: (_: any) => void;
   placeholder?: string;
+  nextQuestion: (answer: Answer) => void;
 }) {
   const [text, setText] = useState("");
   return (
@@ -21,6 +23,7 @@ export default function Custom({
         <Icons.EditIcon />
         <View style={{ marginLeft: 10 }} />
         <TextInput
+          keyboardType="number-pad"
           value={text}
           placeholder={placeholder}
           onChangeText={setText}
@@ -31,9 +34,11 @@ export default function Custom({
           style={styles.button}
           title="Далее"
           mode="contained"
-          onPress={() =>
-            setAnswers((prev: Answer) => ({ ...prev, customAnswer: text }))
-          }
+          onPress={() => {
+            const answer = { customAnswer: text };
+            nextQuestion(answer);
+            setAnswers((prev: Answer) => ({ ...prev, ...answer }));
+          }}
         />
       )}
     </View>

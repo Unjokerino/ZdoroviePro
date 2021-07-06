@@ -1,4 +1,4 @@
-import { path, pathOr } from "ramda";
+import { getPurposeId } from "../../utils/getPurposeId";
 import store from "..";
 import api from "../../services/api";
 import {
@@ -16,12 +16,26 @@ import {
   USER_GOALS_FAIL,
   TASK_LOAD,
   TASK_SUCCESS,
+  TASK_FAIL,
+  START_USER_GOAL_LOAD,
+  START_USER_GOAL_SUCCESS,
+  START_USER_GOAL_FAIL,
+  UPDATE_USER_GOAL_LOAD,
+  UPDATE_USER_GOAL_SUCCESS,
+  UPDATE_USER_GOAL_FAIL,
+  FAIL_USER_GOAL_LOAD,
+  FAIL_USER_GOAL_SUCCESS,
+  FAIL_USER_GOAL_FAIL,
+  CREATE_FIRST_TASK_LOAD,
+  CREATE_FIRST_TASK_SUCCESS,
+  CREATE_FIRST_TASK_FAIL,
 } from "../action-types";
 
 export const getGoals = () => async (dispatch) => {
   dispatch({ type: GOALS_LOAD });
   try {
-    const { data } = await api.goals.fetchGoals();
+    const id = store.getState().authReducer.identity.id;
+    const { data } = await api.goals.fetchGoals(id);
     dispatch({ type: GOALS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
@@ -29,11 +43,40 @@ export const getGoals = () => async (dispatch) => {
   }
 };
 
+export const failUserGoal = () => async (dispatch) => {
+  dispatch({ type: FAIL_USER_GOAL_LOAD });
+  try {
+    const id = store.getState().authReducer.identity.id;
+    const purposeId = getPurposeId();
+    const response = await api.goals.failUserGoal(id, purposeId);
+    if (response?.status !== 200)
+      throw new Error(response?.statusText || "Ошибка закрытия задачи");
+    dispatch(getUserGoals());
+    dispatch({ type: FAIL_USER_GOAL_SUCCESS });
+  } catch (error) {
+    dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
+    dispatch({ type: FAIL_USER_GOAL_FAIL, error });
+  }
+};
+
+export const updateUserGoal = (status) => async (dispatch) => {
+  dispatch({ type: UPDATE_USER_GOAL_LOAD });
+  try {
+    const id = store.getState().authReducer.identity.id;
+    const purposeId = getPurposeId();
+    await api.goals.updateUserGoal(id, purposeId, status);
+    dispatch({ type: UPDATE_USER_GOAL_SUCCESS });
+    dispatch(getUserGoals());
+  } catch (error) {
+    dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
+    dispatch({ type: UPDATE_USER_GOAL_FAIL, error });
+  }
+};
+
 export const getUserGoals = () => async (dispatch, state) => {
   dispatch({ type: USER_GOALS_LOAD });
   try {
     const id = store.getState().authReducer.identity.id;
-
     const { data } = await api.users.fetchGoals(id);
 
     dispatch({ type: USER_GOALS_SUCCESS, payload: data });
@@ -43,28 +86,64 @@ export const getUserGoals = () => async (dispatch, state) => {
   }
 };
 
-export const getUserTask = () => async (dispatch, state) => {
-  dispatch({ type: TASK_LOAD });
+export const startUserGoal = () => async (dispatch) => {
+  dispatch({ type: START_USER_GOAL_LOAD });
   try {
-    const id = store.getState().authReducer.identity.id;
-    const { data } = await api.tasks.fetchTasks(id);
-
-    dispatch({ type: TASK_SUCCESS, payload: data[0] });
+    const userId = store.getState().authReducer.identity.id;
+    const purposeId = getPurposeId();
+    await api.goals.startUserGoal({ userId, purposeId });
+    dispatch({ type: START_USER_GOAL_SUCCESS });
+    dispatch(getUserGoals());
   } catch (error) {
-    dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
-    dispatch({ type: TASK_SUCCESS, error });
+    dispatch({
+      type: SHOW_SNACK_BAR,
+      payload: error.response?.data?.message || error.message,
+    });
+    dispatch({ type: START_USER_GOAL_FAIL, error });
   }
 };
 
-export const updateTask = (update) => async (dispatch, state) => {
+export const createFirstTask = () => async (dispatch) => {
+  dispatch({ type: CREATE_FIRST_TASK_LOAD });
+  try {
+    const id = store.getState().authReducer.identity.id;
+    const purposeId = getPurposeId();
+    const response = await api.tasks.createFirstTask(id, purposeId);
+    if (response?.status !== 200)
+      throw new Error(response?.statusText || "Ошибка cоздания первой задачи");
+    dispatch({ type: CREATE_FIRST_TASK_SUCCESS });
+  } catch (error) {
+    dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
+    dispatch({ type: CREATE_FIRST_TASK_FAIL, error });
+  }
+};
+
+export const getUserTask = () => async (dispatch) => {
+  dispatch({ type: TASK_LOAD });
+  try {
+    const id = store.getState().authReducer.identity.id;
+    const purposeId = getPurposeId();
+    const { data } = await api.tasks.fetchTasks(id, purposeId);
+    if (data.length === 0) {
+      dispatch(createFirstTask());
+    }
+    dispatch({ type: TASK_SUCCESS, payload: data[0] });
+  } catch (error) {
+    dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
+    dispatch({ type: TASK_FAIL, error });
+  }
+};
+
+export const updateTask = (update) => async (dispatch) => {
   dispatch({ type: UPDATE_TASK_LOAD });
   try {
-    const id = store.getState().goalsReducer.currentTask.id;
-
-    const response = await api.tasks.updateTask(id, update);
-    if (response.status !== 200) throw Error(response.status);
+    const id = store.getState().authReducer.identity.id;
+    const purposeId = getPurposeId();
+    await api.tasks.updateTask(id, purposeId, update);
+    dispatch(getUserGoals());
     dispatch({ type: UPDATE_TASK_SUCCESS });
   } catch (error) {
+    dispatch(getUserGoals());
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
     dispatch({ type: UPDATE_TASK_FAIL, error });
   }

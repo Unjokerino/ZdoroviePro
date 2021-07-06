@@ -3,12 +3,15 @@ import {
   SET_CURRENT_GOAL_FAIL,
   GOALS_SUCCESS,
   GOALS_FAIL,
-  UPDATE_TASK_SUCCESS,
+  SIGN_OUT,
   UPDATE_TASK_FAIL,
   USER_GOALS_SUCCESS,
   USER_GOALS_FAIL,
   TASK_FAIL,
   TASK_SUCCESS,
+  UPDATE_USER_GOAL_SUCCESS,
+  UPDATE_USER_GOAL_FAIL,
+  FAIL_USER_GOAL_SUCCESS,
 } from "../action-types";
 
 const initialState = {
@@ -29,12 +32,18 @@ export default (state = initialState, action) => {
 
     case TASK_SUCCESS:
       return { ...state, currentTask: action.payload };
+    case FAIL_USER_GOAL_SUCCESS:
+      return { ...initialState };
+    case UPDATE_USER_GOAL_FAIL:
     case USER_GOALS_FAIL:
     case UPDATE_TASK_FAIL:
     case TASK_FAIL:
     case SET_CURRENT_GOAL_FAIL:
     case GOALS_FAIL:
       return { ...state, error: action.error };
+    case UPDATE_USER_GOAL_SUCCESS:
+    case SIGN_OUT:
+      return initialState;
     default:
       return state;
   }

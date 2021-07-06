@@ -1,4 +1,7 @@
+import { Answer, Answers } from "../../screens/TestScreen";
+
 export interface TestState {
+  answers: Answers[];
   currentTest: Test;
   currentCategoryIndex: number;
   currentQuestionIndex: number;
@@ -8,49 +11,70 @@ export interface Test {
   id: string;
   name: string;
   text: string;
+  description: string;
+  icon: {
+    icon_type: string;
+    id: string;
+    name: string;
+  };
   categories: {
-    categories: Category[];
+    category: Category;
     order: number;
   }[];
 }
 
 export interface Category {
+  id: string;
   name: string;
   text: string;
-  icon: string;
-  type: "video" | "image";
-  icon_type: "video" | "image";
-  count_question: number;
-  order: number;
+  icon: {
+    icon_type: string;
+    id: string;
+    name: string;
+  };
   questions: {
     question: Question[];
     order: number;
-  };
+  }[];
 }
 export interface Option {
   id: string;
-  text: string;
+  next_question?: null | number;
+  option_custom?: {
+    field_text: string;
+    id: string;
+  };
+  type: "button" | "radio";
+  order: number;
+  points: number;
+  title: string;
 }
 
 export interface Question {
   Question_Extras: QuestionsExtra[];
+  extra_questions: QuestionsExtra[];
   text: null | string;
   title: string;
-  icon: Icon;
-  order?: number;
-  select: {
-    group_options: [];
+  icon: {
+    icon_type: string;
     id: string;
-    option_custom: null | string;
-    options: Option[];
-    type: Type;
+    name: string;
   };
-  field?: null | string;
-  type: Type;
-  options?: Option[];
-  Options?: Option[];
+  select: Select;
   questionsExtra: QuestionsExtra[];
   conditions: Condition[];
+}
+
+export interface Select {
+  group_options: {
+    id: string;
+    options: Option[];
+    title: string;
+  }[];
+  id: string;
+  option_custom: null | string;
+  options: Option[];
+  type: Type;
 }
 
 export interface Condition {
@@ -84,4 +108,7 @@ export enum Type {
   Custom = "custom",
   Radio = "radio",
   CustomVariable = "custom-variable",
+  ConditionalOptions = "conditional-options",
+  GroupOptions = "group-options",
+  CustomVariants = "custom-variants",
 }

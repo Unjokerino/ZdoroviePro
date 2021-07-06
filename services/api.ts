@@ -23,25 +23,46 @@ export default {
   },
   goals: {
     fetchGoals: () => healthProInstance.get(GOALS_URL),
-    startGoal: (goalID: string, userID: string) =>
-      healthProInstance.post(`${USERS_URL}/${userID}/purpose/${goalID}`),
+    startUserGoal: (params: { purposeId: string; userId: string }) =>
+      healthProInstance.post(`${MAIN_URL}/purpose-user`, params),
+    failUserGoal: (userId: string, purposeId: string) =>
+      healthProInstance.get(
+        `${MAIN_URL}/purpose-user/${userId}/purpose/${purposeId}/failed`
+      ),
+    updateUserGoal: (userId: string, purposeId: string, status: string) =>
+      healthProInstance.patch(
+        `${MAIN_URL}/purpose-user/${userId}/purpose/${purposeId}`,
+        { status }
+      ),
   },
   tasks: {
-    fetchTasks: (id: string) =>
-      healthProInstance.get(`${MAIN_URL}/purpose-tasks/user/${id}`),
+    createFirstTask: (userId: string, purposeId: string) =>
+      healthProInstance.get(
+        `${MAIN_URL}/purpose-tasks-user/${userId}/purpose/${purposeId}/first`
+      ),
+    fetchTasks: (userId: string, purposeId: string) =>
+      healthProInstance.get(
+        `${MAIN_URL}/purpose-tasks-user/user/${userId}/purpose/${purposeId}`
+      ),
     updateTask: (
-      id: string,
+      userId: string,
+      purposeId: string,
       params: {
         status: string;
         comment: string;
         points: number;
         rating: number;
       }
-    ) => healthProInstance.put(`${MAIN_URL}/purpose-tasks/${id}`, params),
+    ) =>
+      healthProInstance.post(
+        `${MAIN_URL}/purpose-tasks-user/${userId}/purpose/${purposeId}`,
+        params
+      ),
   },
   users: {
-    fetchGoals: (id: string) =>
-      healthProInstance.get(`${USERS_URL}/${id}/purpose`),
-    fetchUser: (id: string) => healthProInstance.get(`${USERS_URL}/${id}`),
+    fetchGoals: (userId: string) =>
+      healthProInstance.get(`${MAIN_URL}/purpose-user/${userId}/purpose`),
+    fetchUser: (userId: string) =>
+      healthProInstance.get(`${USERS_URL}/${userId}`),
   },
 };

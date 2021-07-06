@@ -25,7 +25,7 @@ export const SECOND_PART_DESCRIPTION_SCREEN = "SECOND_PART_DESCRIPTION_SCREEN";
 export const HEALTH_PROFILE_SCREEN = "HEALTH_PROFILE_SCREEN";
 export const DESCRIPTION_SCREEN = "DESCRIPTION_SCREEN";
 export const LOGIN_SCREEN = "Логин";
-export const RECOMENDATION_SCREEN = 'RecomendationScreen';
+export const RECOMENDATION_SCREEN = "RecomendationScreen";
 export const REGISTRATION_SCREEN = "Регистрация";
 export const TEST_FILL_INFO = "Заполните информацию для теста";
 export const RATING_MODAL = "RATING_MODAL";
@@ -38,6 +38,8 @@ export const QUESTION_VARIANTS = "variants";
 export const QUESTION_VARIABLE = "variable";
 export const QUESTION_CUSTOM = "custom";
 export const QUESTION_CONDITIONAL_OPTIONS = "conditional-options";
+export const QUESTION_GROUP_OPTIONS = "group-options";
+export const QUSETION_CUSTOM_VARIANTS = "custom-variants";
 export const QUESTION_RADIO = "radio";
 export const QUESTION_CUSTOM_VARIABLE = "custom-variable";
 
@@ -51,7 +53,7 @@ export const SCREEN_HEIGHT = Dimensions.get("screen").height;
 //API
 export const RANDOM_IMAGE = "https://picsum.photos/600/600?random=3";
 export const RANDOM_USER_URL = "https://randomuser.me/api/";
-export const MAIN_URL = "https://unoit.ru/";
+export const MAIN_URL = "https://unoit.ru";
 export const MAIN_URL_API = "https://unoit.ru";
 export const MAIN_URL_AUTH = "https://unoit.ru/auth";
 export const MAIN_TEST_URL = `${MAIN_URL_API}/tests/a2df3ac9-b68b-4f94-aaf0-ccefbcbfa3b4`;

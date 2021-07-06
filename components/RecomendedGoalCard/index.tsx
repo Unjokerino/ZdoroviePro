@@ -1,5 +1,4 @@
 import {
-  ImageBackground,
   StyleProp,
   TouchableOpacity,
   View,
@@ -7,12 +6,13 @@ import {
   Image,
   Text,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import styles from "./styles";
-import { Colors, Button, Title } from "react-native-paper";
+import { Button, Title } from "react-native-paper";
 import Progress from "../Progress";
+import { Goal } from "../../types/store/goals";
 
-export interface GoalProps {
+export interface GoalProps extends Goal {
   style?: StyleProp<ViewStyle>;
   title: string;
   duration: number;
@@ -21,7 +21,6 @@ export interface GoalProps {
   rules_description: string;
   preview_description: string;
   motivation_description: string;
-  status?: string;
   id: string;
   goal: string;
   howItWorks: string;
@@ -36,6 +35,7 @@ export default function RecomendedGoalCard({
   title,
   complete_days = 20,
   duration = 60,
+  purpose,
   description = "",
   onPress,
   status,
@@ -57,10 +57,14 @@ export default function RecomendedGoalCard({
 
   const Status = useCallback(() => {
     switch (status) {
+      case "complete":
+        return <Text style={styles.done}>Выполнено</Text>;
       case "active":
         return <Text style={styles.inProgress}>В работе</Text>;
+      case "inactive":
+        return <Text style={styles.inactive}>Не активна</Text>;
       case "failed":
-        return <Text style={styles.failed}>В работе</Text>;
+        return <Text style={styles.failed}>Провалено</Text>;
 
       default:
         return <View />;
@@ -70,16 +74,28 @@ export default function RecomendedGoalCard({
   const Description = () => (
     <View>
       <Text numberOfLines={4} style={styles.description}>
-        {description}
+        {purpose?.description || description}
       </Text>
     </View>
   );
+
+  const buttonMessage = useMemo(() => {
+    switch (status) {
+      case "active":
+        return "Перейти";
+      case "inactive":
+        return "Активировать";
+      default:
+        return "Просмотреть";
+    }
+  }, [purpose, status]);
+
   return (
     <View style={[styles.container, style]}>
       <Status />
       <View style={styles.card}>
         <Title numberOfLines={1} style={styles.title}>
-          {title}
+          {purpose?.title || title}
         </Title>
         <Text style={styles.subtitle}>{duration} дней</Text>
         {active ? <ProgressView /> : <Description />}
@@ -92,18 +108,12 @@ export default function RecomendedGoalCard({
           mode="contained"
           onPress={onPress}
         >
-          Просмотреть
+          {buttonMessage}
         </Button>
       </TouchableOpacity>
       <Image
         source={require("../../assets/images/person.png")}
-        style={{
-          height: 91,
-          width: 65,
-          alignSelf: "flex-end",
-          marginTop: -90,
-          marginRight: 20,
-        }}
+        style={styles.personImage}
       />
     </View>
   );

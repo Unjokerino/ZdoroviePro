@@ -1,35 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { incrementCurrentTest } from "../../store/actions";
-import Button from "../../components/Button";
+//@ts-ignore
+import { incrementCurrentTest, skipCategory } from "../../store/actions";
 import CustomLayout from "../../components/CustomLayout";
 import {
   CONGRATULATIONS_SCREEN,
-  MAIN_URL,
-  QUESTION_CONDITIONAL,
-  QUESTION_CONDITIONAL_OPTIONS,
-  QUESTION_CUSTOM,
   QUESTION_CUSTOM_CONDITIONAL,
-  QUESTION_CUSTOM_VARIABLE,
-  QUESTION_RADIO,
-  QUESTION_VARIABLE,
-  QUESTION_VARIANTS,
-  SCREEN_HEIGHT,
   TEST_SCREEN,
 } from "../../constants";
 import Progress from "../../components/Progress";
 import selectState from "../../store/selectors/tests";
 import TestCard from "../../components/TestCard";
-import { Category, Condition, Question, Test } from "../../types/store/tests";
+import { Category, Question, Test } from "../../types/store/tests";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
 import { path } from "ramda";
-
 import { Text } from "../../components/Themed";
-
 import styles from "./styles";
+import { Option } from "../../types/store/tests";
 import CategoryCard from "../../components/CategoryCard";
 
 interface Props {
@@ -47,9 +37,15 @@ interface SelectProps {
 export interface Answer {
   conditionalAnswer?: boolean;
   customAnswer?: string;
-  condition?: Condition;
+  condition?: Option;
   option?: { text: string; id: string };
+  points?: number;
 }
+
+export type Answers = {
+  answer: Answer & { title: string };
+  category: string;
+}[];
 
 interface Progress {
   totalQuestions: number;
@@ -73,46 +69,7 @@ export default function TestScreen({ navigation, route }: Props) {
   }, []);
 
   useEffect(() => {
-    if (
-      question?.select?.type === QUESTION_CONDITIONAL &&
-      answers.conditionalAnswer !== undefined
-    ) {
-      nextQuestion();
-    }
-    if (
-      (question?.select?.type === QUESTION_CUSTOM_CONDITIONAL &&
-        answers.conditionalAnswer === false) ||
-      (answers.customAnswer &&
-        answers.conditionalAnswer === true &&
-        answers.customAnswer !== "Какое")
-    ) {
-      nextQuestion();
-    }
-    if (question?.select?.type === QUESTION_CUSTOM && answers.customAnswer) {
-      nextQuestion();
-    }
-
-    if (
-      (question?.select?.type === QUESTION_RADIO ||
-        question?.select?.type === QUESTION_CONDITIONAL_OPTIONS) &&
-      answers.option
-    ) {
-      nextQuestion();
-    }
-
-    if (
-      question?.select?.type === QUESTION_CUSTOM_VARIABLE &&
-      answers.condition
-    ) {
-      nextQuestion();
-    }
-
-    if (
-      (question?.select?.type === QUESTION_VARIABLE ||
-        question?.select?.type === QUESTION_VARIANTS) &&
-      answers.condition !== undefined
-    ) {
-      nextQuestion();
+    if (answers?.condition) {
     }
   }, [answers]);
 
@@ -152,7 +109,7 @@ export default function TestScreen({ navigation, route }: Props) {
     route.params?.question ||
     path(["questions", currentQuestionIndex, "question"], category);
 
-  const getNextQuestion = () => {
+  const getNextQuestion = (skipCategory: boolean = false) => {
     const nextQuestionCard:
       | (Question & { nextCategory?: boolean })
       | undefined =
@@ -178,6 +135,22 @@ export default function TestScreen({ navigation, route }: Props) {
         ],
         currentTest
       );
+    if (skipCategory) {
+      const nextQuestionCard:
+        | (Question & { nextCategory?: boolean })
+        | undefined = path(
+        [
+          "categories",
+          currentCategoryIndex + 1,
+          "category",
+          "questions",
+          0,
+          "question",
+        ],
+        currentTest
+      );
+      return nextQuestionCard;
+    }
     return nextQuestionCard;
   };
 
@@ -192,15 +165,14 @@ export default function TestScreen({ navigation, route }: Props) {
     return current === first;
   };
   const checkIfLastQuestion = () => {
-    const isLastCategory =
-      currentTest.categories.length === currentCategoryIndex;
+    const isLastCategory = !currentTest.categories[currentCategoryIndex + 1];
 
-    const isLastQuestion =
-      (category?.questions?.length || 1 - 1) === currentQuestionIndex;
+    const isLastQuestion = !category?.questions[currentQuestionIndex + 1];
+
     return isLastQuestion && isLastCategory;
   };
 
-  const nextQuestion = () => {
+  const nextQuestion = (answers: Answer, shouldSkipCategory = false) => {
     const extraQuestion: Question | undefined = path(
       ["extra_questions", 0],
       question
@@ -220,13 +192,18 @@ export default function TestScreen({ navigation, route }: Props) {
         nextScreen: route.params?.nextScreen || CONGRATULATIONS_SCREEN,
       });
     } else {
-      const nextQuestion: Question | undefined = getNextQuestion();
+      const nextQuestion: Question | undefined =
+        getNextQuestion(shouldSkipCategory);
       nextQuestion &&
         navigation.replace(TEST_SCREEN, {
           question: nextQuestion,
           nextScreen: route.params?.nextScreen || CONGRATULATIONS_SCREEN,
         });
-      dispatch(incrementCurrentTest());
+      if (shouldSkipCategory) {
+        dispatch(skipCategory(answers));
+      } else {
+        dispatch(incrementCurrentTest(answers));
+      }
     }
   };
 

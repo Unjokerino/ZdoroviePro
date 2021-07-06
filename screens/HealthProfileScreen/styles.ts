@@ -1,7 +1,4 @@
-import React from "react";
 import { StyleSheet } from "react-native";
-import { Colors, SCREEN_WIDTH } from "../../constants";
-import useColorScheme from "../../hooks/useColorScheme";
 
 const MARGIN = 20;
 
@@ -38,9 +35,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 15,
   },
+  good: {
+    color: "#009688",
+  },
+  normal: {
+    color: "#ff9800",
+  },
+  terrible: {
+    color: "#D8000C",
+  },
+  bad: {
+    color: "#e91e63",
+  },
   subtitle: {
     fontSize: 12,
     fontWeight: "700",
+    paddingTop: 5,
+    maxHeight: 40,
   },
   title: {
     fontSize: 16,

@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import {
   View,
+  StyleSheet,
   Text,
   Image,
   TouchableOpacity,
@@ -11,10 +12,12 @@ import {
 import { Modal, Portal, Title } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../components/Button";
-import { RATING_MODAL } from "../../constants";
+import { Colors, RATING_MODAL } from "../../constants";
 import { RootState } from "../../types/store";
 //@ts-ignore
-import { getUserTask } from "../../store/actions";
+import { getUserTask, failUserGoal } from "../../store/actions";
+import moment from "moment";
+import { Event } from "../../types/store/goals";
 
 export default function DetailedGoalScreen() {
   const [visible, setVisible] = React.useState(false);
@@ -29,10 +32,15 @@ export default function DetailedGoalScreen() {
     goalsReducer: { currentGoal },
   } = useSelector((state: RootState) => state);
 
-  const { complete_days, duration } = currentGoal?.purpose;
+  const { complete_days, duration } = currentGoal?.purpose || {
+    complete_days: 0,
+    duration: 0,
+  };
 
   const closeGoal = () => {
+    dispatch(failUserGoal());
     hideModal();
+    navigation.goBack();
   };
 
   const leaveRating = () => {
@@ -114,16 +122,36 @@ export default function DetailedGoalScreen() {
       },
     ],
   ];
+
+  const EventCard = (event: Event) => {
+    const color = event.title?.toLowerCase().includes("провалена")
+      ? Colors.light.error
+      : Colors.light.header;
+    return (
+      <View style={styles.eventRow}>
+        <View style={styles.outerCircle}>
+          <View style={[styles.innerCircle, { borderColor: color }]} />
+        </View>
+        <View style={styles.eventTextContainer}>
+          <Text style={styles.eventTitle}>{event.title}</Text>
+          <View style={styles.dateContainer}>
+            <Text style={styles.eventDate}>
+              {moment(event.created_date).format("MM/DD/YYYY")}
+            </Text>
+            <Text style={styles.eventDate}>
+              {moment(event.created_date).format("hh:mm")}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   const defaultImage = require("../../assets/images/smokeBackground.png");
   return (
     <ScrollView>
       <ImageBackground
-        style={{
-          height: 300,
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "flex-end",
-        }}
+        style={styles.imageBackground}
         resizeMode="stretch"
         source={currentGoal?.background || defaultImage}
       >
@@ -142,126 +170,39 @@ export default function DetailedGoalScreen() {
           );
         })}
       </ImageBackground>
-      <View
-        style={{
-          marginTop: -20,
-          backgroundColor: "white",
-          marginHorizontal: 50,
-          borderRadius: 10,
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.mainContainer}>
         <Title>День {complete_days}</Title>
         <Text style={{ fontWeight: "bold" }}>Каждый день я побеждаю</Text>
-        <View
-          style={{
-            marginVertical: 20,
-            width: 120,
-            height: 120,
-            borderRadius: 60,
-            borderWidth: 10,
-            justifyContent: "center",
-            alignItems: "center",
-            borderColor: "#CFD8DC",
-          }}
-        >
-          <Text style={{ fontWeight: "bold", fontSize: 34 }}>
-            {Math.round((complete_days || 0 / duration) * 100)}%
+        <View style={styles.progressCircle}>
+          <Text style={styles.progressText}>
+            {Math.round((complete_days || 0 / duration) * 100) || 0}%
           </Text>
         </View>
         <Button
           onPress={showModal}
-          style={{ width: "100%" }}
+          style={styles.endButton}
           backgroundColor="#FF8181"
           textColor="#fff"
           title={"Хочу курить"}
         />
       </View>
-      <TouchableOpacity
-        onPress={leaveRating}
-        style={{
-          backgroundColor: "#fff",
-          flexDirection: "row",
-          paddingHorizontal: 18,
-          paddingVertical: 14,
-          marginHorizontal: 10,
-          marginVertical: 10,
-          alignItems: "center",
-        }}
-      >
-        <View
-          style={{
-            width: 12,
-            height: 12,
-            borderRadius: 6,
-            marginRight: 10,
-            backgroundColor: "#4DD0E1",
-          }}
-        />
+      <TouchableOpacity onPress={leaveRating} style={styles.feedBackContainer}>
+        <View style={styles.feedbackIndicator} />
         <Text>Расскажите о Ваших ошущениях сегодня</Text>
       </TouchableOpacity>
       <View>
         <Title style={{ marginHorizontal: 20 }}>Ход событий</Title>
-        {[1, 2, 3, 4].map((item) => (
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: 21,
-              marginHorizontal: 20,
-            }}
-          >
-            <View
-              style={{
-                marginTop: 30,
-                backgroundColor: "#fff",
-                width: 48,
-
-                height: 48,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 24,
-              }}
-            >
-              <View
-                style={{
-                  borderColor: "#6360FF",
-                  borderWidth: 3,
-                  width: 28,
-                  height: 28,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 14,
-                }}
-              ></View>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                marginHorizontal: 8,
-
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <Text style={{ flex: 1 }}>
-                Отметили свое состояние и вырастили дуб
-              </Text>
-              <Text style={{ flex: 0.7, opacity: 0.8, alignSelf: "flex-end" }}>
-                26/02 14:00 {"\n"} +20 балов
-              </Text>
-            </View>
-          </View>
-        ))}
+        {currentGoal?.event_history
+          ?.sort((a, b) =>
+            moment(b.created_date).diff(moment(a.created_date), "seconds")
+          )
+          .map((event) => (
+            <EventCard key={event.id} {...event} />
+          ))}
       </View>
       <Portal>
         <Modal
-          contentContainerStyle={{
-            backgroundColor: "#fff",
-            paddingBottom: 20,
-            marginHorizontal: 20,
-            alignItems: "center",
-          }}
+          contentContainerStyle={styles.modalContainer}
           visible={visible}
           onDismiss={hideModal}
         >
@@ -271,19 +212,11 @@ export default function DetailedGoalScreen() {
             source={require("../../assets/images/sky.png")}
           />
           <Title>Не сдавайся.</Title>
-          <Text
-            style={{
-              paddingVertical: 36,
-              paddingHorizontal: 20,
-              textAlign: "center",
-            }}
-          >
+          <Text style={styles.motivationalText}>
             Тут какой нибудь важный текст о том почему не нанада сдаваться
           </Text>
           <TouchableOpacity onPress={hideModal}>
-            <Text style={{ color: "#6360FF", fontWeight: "bold" }}>
-              Я хочу продолжить
-            </Text>
+            <Text style={styles.continueText}>Я хочу продолжить</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={closeGoal}>
             <Text>Закурить и сбросить таймер</Text>
@@ -293,3 +226,94 @@ export default function DetailedGoalScreen() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  eventRow: {
+    flexDirection: "row",
+    marginBottom: 21,
+    alignItems: "center",
+    marginHorizontal: 20,
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    paddingBottom: 20,
+    marginHorizontal: 20,
+    alignItems: "center",
+  },
+  motivationalText: {
+    paddingVertical: 36,
+    paddingHorizontal: 20,
+    textAlign: "center",
+  },
+  continueText: { color: "#6360FF", fontWeight: "bold" },
+  mainContainer: {
+    marginTop: -20,
+    backgroundColor: "white",
+    marginHorizontal: 50,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  progressCircle: {
+    marginVertical: 20,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#CFD8DC",
+  },
+  progressText: { fontWeight: "bold", fontSize: 34 },
+  endButton: { width: "100%" },
+  feedBackContainer: {
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    marginHorizontal: 10,
+    marginVertical: 10,
+    alignItems: "center",
+  },
+  feedbackIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 10,
+    backgroundColor: "#4DD0E1",
+  },
+  imageBackground: {
+    height: 300,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "flex-end",
+  },
+  eventTextContainer: {
+    flexDirection: "row",
+    marginHorizontal: 8,
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  dateContainer: {
+    flex: 0.7,
+  },
+  eventTitle: { flex: 1 },
+  eventDate: { flex: 0.7, opacity: 0.6 },
+  outerCircle: {
+    backgroundColor: "#fff",
+    width: 48,
+    height: 48,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 24,
+  },
+  innerCircle: {
+    borderColor: "#6360FF",
+    borderWidth: 3,
+    width: 28,
+    height: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 14,
+  },
+});

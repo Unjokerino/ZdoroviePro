@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { IconButton, Title } from "react-native-paper";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Button from "./Button";
 import { Rating, AirbnbRating } from "react-native-ratings";
 //@ts-ignore
@@ -24,7 +24,6 @@ export default function RatingModal() {
 
   const send = () => {
     const update = {
-      status: "completed",
       comment,
       rating,
     };

@@ -1,22 +1,15 @@
 import React, { useEffect } from "react";
-import { View, Text, ImageBackground, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import { Paragraph, Title } from "../../components/Themed";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Colors,
-  GOALS_SCREEN,
-  TEST_FILL_INFO,
-  TEST_SCREEN,
-} from "../../constants";
+import { TEST_FILL_INFO } from "../../constants";
 import styles from "./styles";
 import { getMainTest } from "../../store/actions";
 import selectState from "../../store/selectors/tests";
 import { Question, Test } from "../../types/store/tests";
 import { path } from "ramda";
 import Button from "../../components/Button";
-import { Video, AVPlaybackStatus } from "expo-av";
-import { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Video } from "expo-av";
 export interface SelectProps {
   currentTest: Test;
   currentCategoryIndex: number;

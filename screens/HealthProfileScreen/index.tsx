@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,87 +14,173 @@ import styles from "./styles";
 import CustomLayout from "../../components/CustomLayout";
 import Icons from "../../assets/icons";
 import Button from "../../components/Button";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import { GOALS_SCREEN, RECOMENDATION_SCREEN } from "../../constants";
+import {
+  Colors,
+  GOALS_SCREEN,
+  RECOMENDATION_SCREEN,
+  SCREEN_WIDTH,
+} from "../../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootState } from "../../types/store";
+import { Answer, Answers } from "../TestScreen";
+import { useNavigation } from "@react-navigation/native";
+import CategoryResult from "../../components/CategoryResult";
+import CategoryGraph from "../../components/CategoryGraph";
+import {
+  VictoryArea,
+  VictoryBar,
+  VictoryChart,
+  VictoryLabel,
+  VictoryPolarAxis,
+  VictoryScatter,
+  VictoryTheme,
+} from "victory-native";
 
 export interface CardProps {
-  title:string
-  color:string 
-  icon: 'Graph' | 'Activity' | 'Food' | 'Smoking'
-  subtitle:string
-  text:string
-  name:string
-  image: any
+  title: string;
+  color: string;
+  icon: "Graph" | "Activity" | "Food" | "Smoking";
+  subtitle: string;
+  text: string;
+  name: string;
+  image: any;
 }
 
-export default function HealthProfileScreen({ navigation }) {
+export default function HealthProfileScreen() {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [testResults, setTestResults] = useState<Answers[]>([]);
+  const [testGraphData, setTestGraphData] =
+    useState<{ x: number; y: number; label: string | string[] }[]>();
+  const {
+    testsReducer: { answers, currentTest },
+  } = useSelector((state: RootState) => state);
 
-  const descriptions: CardProps[] = [
-    {
-      name:'Физическая активность в норме',
-      subtitle:'Высокая физическая активность',
-      icon:'Activity',
-      title: "Физическая активность",
-      text: `Вы бегаете и двигаетесь достаточно, продолжайте в том же духе 🎈`,
-      image: require("../../assets/images/man.png"),
-    },
-    {
-      name:'Потребление животного жира очень высокое',
-      subtitle:'Ваша диета содержит много жира',
-      color:'#6360FF',
-      icon:'Food',
-      title: "Питание",
-      text: `Ваша диета содержит много жира
-      и холестерина. Вам необходимо реже потреблять жирное мясо и мясные продукты, субпродукты и колбасные изделия. Замените их на низкожировые сорта мяса (грудка индейки, курицы). Ограничьте  сливочное масло до 10-20г
-      в день. Отдавайте предпочтение низкожировым сортам молочных продуктов: сыр 17% и менее, творог 5%
-      и менее; йогурты , молоко и кефир 1-1,5%`,
-      image: require("../../assets/images/sadGirl.png"),
-    },
-    {
-      name:'Никотиновая зависимость не выявлена',
-      subtitle:'Никотиновой зависимости нет',
-      color:'#4DD0E1',
-      icon:'Smoking',
-      title: "Курение",
-      text: `Если Вы курите 5 – 10 лет не больше5 сигарет в день – это «случайное курение» с психологической зависимостью. Вы можете бросить рази навсегда. Не бойтесь, абстиненциине будет.
+  const getTestResults = async () => {
+    const results = await AsyncStorage.getItem("testResults");
 
-    Если Вы курите 10 – 20 лет от 5 до 20 сигарет в день – это «привычное курение» с явлениями физической зависимости.
-    
-    Если Вы курите более 20 лет и более 20 сигарет в день, автоматически, ночьюи натощак, иногда не замечая самого факта курения – это «пристрастное курение» с преобладанием физической зависимости
-    `,
-      image: require("../../assets/images/man.png"),
-    },
-  ];
+    const storedTestResults: Answers[] | undefined = results
+      ? JSON.parse(results)
+      : undefined;
+    const testResults = answers ? answers : storedTestResults;
+    setTestResults(testResults);
+  };
+
+  useEffect(() => {
+    getTestResults();
+  }, []);
+
+  useEffect(() => {
+    if (testResults.length > 0) {
+      const getCategory = (category?: string) => {
+        return category?.split(":").map((text) => text.trim());
+      };
+      const data = testResults.map((answer, index) => ({
+        y: CategoryGraph(
+          index,
+          answer.reduce((acc, cur) => {
+            return cur?.answer?.points ? (acc += cur?.answer?.points) : acc;
+          }, 0)
+        ).result,
+        x: index,
+        label: getCategory(answer[0].category) || " ",
+      }));
+
+      console.log(data);
+      setTestGraphData(data);
+    }
+  }, [testResults]);
 
   const startGoals = () => {
-    AsyncStorage.setItem("testDone", "true");
     navigation.replace(GOALS_SCREEN);
   };
 
-  const Card = (props: CardProps) => {
-    const { title, color = '#FF8181', icon, subtitle } = props
-    const Icon = Icons[icon]
-    return(
-    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate(RECOMENDATION_SCREEN, props )}>
-      <View style={[styles.iconContainer, { backgroundColor: color }]}>
-        <Icon/>
-      </View>
-      <View style={[styles.cardInfo]}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
-      </View>
-    </TouchableOpacity>)
+  const chartConfig = {
+    backgroundColor: Colors.light.header,
+    backgroundGradientFrom: Colors.light.header,
+    backgroundGradientTo: Colors.light.header,
+    decimalPlaces: 0, // optional, defaults to 2dp
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: "6",
+      strokeWidth: "2",
+      stroke: "#ffa726",
+    },
+  };
+
+  const Card = ({ answers, index }: { answers: Answers; index: number }) => {
+    console.warn(answers);
+    const icon =
+      currentTest.categories && currentTest.categories[index].category.icon;
+
+    //const Icon = Icons[icon];
+    return (
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() =>
+          navigation.navigate(RECOMENDATION_SCREEN, { answers, index })
+        }
+      >
+        <View
+          style={[styles.iconContainer, { backgroundColor: "#000" }]}
+        ></View>
+        <View style={[styles.cardInfo]}>
+          <Text style={styles.title}>
+            {testGraphData && testGraphData[index].label}
+          </Text>
+          <CategoryResult
+            ellipsizeMode="tail"
+            style={styles.subtitle}
+            numberOfLines={1}
+            category={index}
+            points={testGraphData ? testGraphData[index].y : 0}
+          />
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
     <CustomLayout>
       <View style={styles.container}>
         <View style={styles.graphContainer}>
-          <Icons.Graph />
+          <VictoryBar
+            theme={VictoryTheme.material}
+            data={testGraphData}
+            style={{
+              data: {
+                fill: ({ datum }) => {
+                  if (datum.y > 0 && datum.y < 50) {
+                    return Colors.light.header;
+                  }
+                  if (datum.y >= 50 && datum.y < 75) {
+                    return Colors.light.warning;
+                  }
+                  if (datum.y >= 75) {
+                    return Colors.light.error;
+                  }
+                  return Colors.light.header;
+                },
+
+                stroke: "black",
+                strokeWidth: 2,
+              },
+              labels: { fill: "black", fontWeight: "bold" },
+            }}
+            scale={{ x: "linear", y: "linear" }}
+            horizontal
+            labelComponent={
+              <VictoryLabel x={40} dy={-22} angle={0} verticalAnchor="middle" />
+            }
+          />
         </View>
-        {descriptions.map(description => <Card {...description} />)}
+        {testResults?.map((answers, index) => (
+          <Card answers={answers} index={index} />
+        ))}
         <Button
           onPress={startGoals}
           style={{ marginVertical: 20 }}

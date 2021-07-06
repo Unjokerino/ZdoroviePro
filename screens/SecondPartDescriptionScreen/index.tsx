@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
-import { View, Text, ImageBackground, ScrollView } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  View,
+  Text,
+  ImageBackground,
+  ScrollView,
+  Animated,
+} from "react-native";
 import { Paragraph, Title } from "../../components/Themed";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -37,20 +43,28 @@ export default function TakeTestScreen({ navigation }) {
     currentTest
   );
   const disabled = isLoading && !!question;
+  const scrollY = new Animated.Value(0);
+
   useEffect(() => {
     dispatch(getSecondTest());
   }, []);
 
   const goToTest = () => {
-    navigation.replace(TEST_SCREEN, {
-      question: question,
-      nextScreen: DESCRIPTION_SCREEN,
-    });
+    if (currentTest.id) {
+      navigation.replace(TEST_SCREEN, {
+        question: question,
+        nextScreen: DESCRIPTION_SCREEN,
+      });
+    } else {
+      dispatch(getSecondTest());
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={{ height: 500, marginBottom: -100, marginTop: -75 }}>
+      <Animated.View
+        style={{ height: 500, marginBottom: -100, marginTop: -75 }}
+      >
         <Video
           ref={video}
           style={styles.video}
@@ -60,12 +74,25 @@ export default function TakeTestScreen({ navigation }) {
           shouldPlay
           isLooping
         />
-      </View>
+      </Animated.View>
 
       <ScrollView
+        scrollEventThrottle={4}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
+              },
+            },
+          ],
+          { useNativeDriver: false }
+        )}
         showsVerticalScrollIndicator={false}
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.contentContainer}
+        style={[styles.scrollContainer]}
+        contentContainerStyle={[styles.contentContainer]}
       >
         <Title style={styles.title}>Углубленный скрининг</Title>
         <View style={styles.paragraphContainer}>
@@ -79,10 +106,11 @@ export default function TakeTestScreen({ navigation }) {
           <Button
             disabled={disabled}
             onPress={goToTest}
-            color="white"
+            loading={isLoading}
             style={styles.button}
+            mode="contained"
             textColor="white"
-            title="Анкетирование он-лайн"
+            title={currentTest.id ? "Анкетирование он-лайн" : "Загрузить тест"}
           />
         </View>
       </ScrollView>

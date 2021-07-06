@@ -8,6 +8,7 @@ import {
   ScrollView,
   FlatList,
   ImageBackground,
+  RefreshControl,
 } from "react-native";
 import Icons from "../../assets/icons";
 import StepCard from "../../components/StepCard";
@@ -35,27 +36,52 @@ import api from "../../services/api";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../types/store";
-import { getUserGoals, setCurrentGoal, getGoals } from "../../store/actions";
+import {
+  getUserGoals,
+  setCurrentGoal,
+  getGoals,
+  updateUserGoal,
+} from "../../store/actions";
+import { Goal } from "../../types/store/goals";
 
 export default function GoalsScreen() {
   const navigation = useNavigation();
   StatusBar.setBarStyle("light-content");
+  const [refreshing, setRefreshing] = useState(false);
   const scroll = new Animated.Value(0);
   const [value, setValue] = useState(0);
   const {
-    authReducer: { identity },
     goalsReducer: { userGoals, goals },
   } = useSelector((state: RootState) => state);
+
+  const filteredGoals = goals.filter((goal) => {
+    if (userGoals?.length === 0) return true;
+    return userGoals.find((ug) => ug.id === goal.id);
+  });
+
   const dispatch = useDispatch();
+
+  const getInitialData = () => {
+    setRefreshing(true);
+    dispatch(getUserGoals());
+    dispatch(getGoals());
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     scroll.addListener(({ value }) => setValue(value));
-    dispatch(getUserGoals());
-    dispatch(getGoals());
+
+    getInitialData();
   }, []);
 
-  const goToGoal = (item) => {
+  const goToGoal = (item: Goal) => {
     dispatch(setCurrentGoal(item));
+    if (item.status === "inactive" || item.status === "complete") {
+      dispatch(updateUserGoal("active"));
+
+      return;
+    }
+
     navigation.navigate(
       item.status === "active" ? DETAILED_GOAL_STACK : GOAL_DESCRIPTION,
       item
@@ -66,6 +92,13 @@ export default function GoalsScreen() {
     <CustomLayout>
       <View style={styles.content}>
         <FlatList
+          scrollEnabled={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={getInitialData}
+            />
+          }
           showsHorizontalScrollIndicator={false}
           data={userGoals}
           renderItem={({ item }) => (
@@ -80,9 +113,14 @@ export default function GoalsScreen() {
         />
 
         <View style={styles.divider}></View>
+        {filteredGoals?.length > 0 && (
+          <Text style={{ fontSize: 18, paddingHorizontal: 20 }}>
+            Рекомендуемые цели
+          </Text>
+        )}
         <FlatList
           showsHorizontalScrollIndicator={false}
-          data={goals}
+          data={filteredGoals}
           renderItem={({ item }) => (
             <RecomendedGoalCard
               style={styles.card}
@@ -93,7 +131,6 @@ export default function GoalsScreen() {
           keyExtractor={(item) => item.title}
           style={styles.scrollContainer}
         />
-
       </View>
     </CustomLayout>
   );

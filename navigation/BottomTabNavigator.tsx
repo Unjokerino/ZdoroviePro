@@ -9,6 +9,7 @@ import {
   GOALS_SCREEN,
   GOAL_DESCRIPTION,
   GOAL_INFO,
+  HEALTH_PROFILE_SCREEN,
   HOME_SCREEN,
   PROFILE_SCREEN,
   RATING_MODAL,
@@ -125,6 +126,16 @@ const HomeNavigator = () => (
     <HomeStack.Screen
       name={GOAL_DESCRIPTION}
       component={GoalDescription}
+      options={{ headerShown: false }}
+    />
+    <GoalStack.Screen
+      name={DETAILED_GOAL}
+      component={DetailedGoalScreen}
+      options={{ headerShown: false }}
+    />
+    <GoalStack.Screen
+      name={RATING_MODAL}
+      component={RatingModal}
       options={{ headerShown: false }}
     />
   </HomeStack.Navigator>

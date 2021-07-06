@@ -27,29 +27,35 @@ export default function Conditional({
   setAnswers,
   conditions,
   answers,
+  nextQuestion,
 }: {
   setAnswers: (_: any) => void;
   conditions?: Condition[];
   answers: Answer;
+  nextQuestion: (answer: Answer) => void;
 }) {
   const [selectedValue, setSelectedValue] = useState("какое");
   const changePickerValue = (customAnswer: string) => {
     setSelectedValue(customAnswer);
+    nextQuestion({ customAnswer });
     setAnswers((prev: Answer) => ({ ...prev, customAnswer }));
   };
   const pickerRef = useRef(null);
-  const options: string[] =
+  const options =
     conditions && conditions.length > 0
       ? conditions.map((item) => item.title)
       : TEST_CONDITIONS;
+
   return (
     <View>
       <Button
         title="Да"
         style={styles.button}
-        onPress={() =>
-          setAnswers((prev: Answer) => ({ ...prev, conditionalAnswer: true }))
-        }
+        onPress={() => {
+          const answer = { conditionalAnswer: true };
+          !answers.conditionalAnswer && nextQuestion(answer);
+          setAnswers((prev: Answer) => ({ ...prev, ...answer }));
+        }}
         mode="contained"
       />
       {answers.conditionalAnswer && (

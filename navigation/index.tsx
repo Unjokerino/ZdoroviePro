@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { ColorSchemeName, Text, View } from "react-native";
+import { ColorSchemeName, Text, View, ActivityIndicator } from "react-native";
 import { LoginStackParamList, RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
 import {
@@ -223,15 +223,24 @@ function CustomDrawerContent(
 
 function DrawerNavigator() {
   const [testStatus, setTestStatus] = React.useState(false);
-
+  const [loading, setLoading] = useState<boolean>(true);
   const fetchTestStatus = async () => {
-    const status = !!(await AsyncStorage.getItem("testDone"));
-    setTestStatus(status);
+    setLoading(true);
+    try {
+      const status = !!(await AsyncStorage.getItem("testDone"));
+      setTestStatus(status);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchTestStatus();
   }, []);
+  if (loading) {
+    return <ActivityIndicator />;
+  }
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -253,7 +262,7 @@ function GoalsNavigator() {}
 function TestNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName={HEALTH_PROFILE_SCREEN}
+      initialRouteName={SECOND_PART_DESCRIPTION_SCREEN}
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name={TAKE_TEST} component={TakeTestScreen} />
