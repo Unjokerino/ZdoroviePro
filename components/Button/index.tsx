@@ -6,26 +6,28 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { styles } from "./styles";
-import { Text } from "../Themed";
+import { Text, View } from "../Themed";
 import { Colors } from "../../constants";
+import { IconButton } from "react-native-paper";
 const Button = ({
   title,
   onPress,
   mode,
   style,
-  disabled,
+  icon,
   loading,
   backgroundColor,
   textColor,
 }: {
-  loading: boolean;
+  loading?: boolean;
   title: string;
-  disabled: boolean;
+  disabled?: boolean;
   onPress: (_: any) => void;
   mode: "outlined" | "contained";
   style?: StyleProp<ViewStyle>;
   backgroundColor?: string;
   textColor?: string;
+  icon?: string;
 }) => {
   const textStyle: "outlinedText" | "containedText" = `${mode}Text`;
   return (
@@ -41,15 +43,33 @@ const Button = ({
       {loading ? (
         <ActivityIndicator color={Colors.light.header} />
       ) : (
-        <Text
+        <View
           style={[
-            styles[textStyle],
-            { textAlign: "center", fontWeight: "bold", fontSize: 17 },
-            textColor ? { color: textColor } : {},
+            {
+              flexDirection: "row",
+              alignItems: "center",
+            },
+            backgroundColor
+              ? { backgroundColor }
+              : { backgroundColor: "transparent" },
           ]}
         >
-          {title}
-        </Text>
+          {icon && (
+            <IconButton
+              style={{ margin: 0, padding: 0, marginRight: 20 }}
+              icon={icon}
+            />
+          )}
+          <Text
+            style={[
+              styles[textStyle],
+              { textAlign: "center", fontWeight: "bold", fontSize: 17 },
+              textColor ? { color: textColor } : {},
+            ]}
+          >
+            {title}
+          </Text>
+        </View>
       )}
     </TouchableOpacity>
   );

@@ -1,4 +1,3 @@
-import { path } from "ramda";
 import React, { ReactElement, useEffect } from "react";
 import {
   View,
@@ -7,19 +6,17 @@ import {
   Image,
   StatusBar,
   ScrollView,
-  Dimensions,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Icons from "../../assets/icons";
 import { Colors, IS_IOS } from "../../constants";
+//@ts-ignore
 import { signOut as signOutAction } from "../../store/actions";
 import styles from "./styles";
 import selectState from "../../store/selectors/auth";
 import { IconButton } from "react-native-paper";
 import { Text } from "../../components/Themed";
 import { useNavigation } from "@react-navigation/native";
-
-const SCREEN_HEIGHT = Dimensions.get("screen").height;
 
 export default function CustomLayout({
   children,

@@ -1,7 +1,8 @@
-import React, { ReactChild, useCallback, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, TouchableOpacity } from "react-native";
 import { Answer } from "../../../screens/TestScreen";
 import { Option, Select } from "../../../types/store/tests";
+import { Text } from "../../Themed";
 import Button from "../../Button";
 import RadioButton from "../../RadioButton";
 import { styles } from "./styles";

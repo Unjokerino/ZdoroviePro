@@ -21,6 +21,10 @@ export const SIGN_UP_LOAD = "SIGN_UP_LOAD";
 export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
 export const SIGN_UP_FAIL = "SIGN_UP_FAIL";
 
+export const FETCH_USER_LOAD = "FETCH_USER_LOAD";
+export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
+export const FETCH_USER_FAIL = "FETCH_USER_FAIL";
+
 export const SIGN_OUT = "SIGN_OUT";
 
 export const GET_SIGN_IN_INFO = "GET_SIGN_IN_INFO";

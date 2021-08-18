@@ -41,9 +41,10 @@ export default (state = initialState, action) => {
     case SET_CURRENT_GOAL_FAIL:
     case GOALS_FAIL:
       return { ...state, error: action.error };
-    case UPDATE_USER_GOAL_SUCCESS:
     case SIGN_OUT:
       return initialState;
+    case UPDATE_USER_GOAL_SUCCESS:
+      return {...state}
     default:
       return state;
   }

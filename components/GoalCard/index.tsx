@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
 import { Caption } from "react-native-paper";
 import { RANDOM_IMAGE, RANDOM_USER_URL } from "../../constants";
 import Progress from "../Progress";
 import styles from "./styles";
+import { Text } from "../Themed";
 
 export default function GoalCard(card: any) {
   return (

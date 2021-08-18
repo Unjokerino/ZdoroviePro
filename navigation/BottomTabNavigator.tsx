@@ -11,6 +11,7 @@ import {
   GOAL_INFO,
   HEALTH_PROFILE_SCREEN,
   HOME_SCREEN,
+  PHYSICAL_ACTIVITY,
   PROFILE_SCREEN,
   RATING_MODAL,
   SCREEN_WIDTH,
@@ -27,6 +28,9 @@ import DetailedGoalScreen from "../screens/DetailedGoalScreen";
 import GoalDescription from "../screens/DetailedGoalScreen/GoalDescription";
 import GoalInfo from "../screens/DetailedGoalScreen/GoalInfo";
 import RatingModal from "../components/RatingModal";
+import ProfileScreen from "../screens/ProfileScreen";
+import AchievementsScreen from "../screens/AchievementsScreen";
+import PhysicalActivityScreen from "../screens/DetailedGoalScreen/PhysicalActivityScreen";
 
 const EmptyComponent = () => <View />;
 
@@ -42,8 +46,8 @@ export default function BottomTabNavigator() {
   ]);
   const renderScene = BottomNavigation.SceneMap({
     [HOME_SCREEN]: HomeNavigator,
-    [PROFILE_SCREEN]: EmptyComponent,
-    [ACHIEVEMENTS_SCREEN]: EmptyComponent,
+    [PROFILE_SCREEN]: ProfileScreen,
+    [ACHIEVEMENTS_SCREEN]: AchievementsScreen,
     [GOALS_SCREEN]: EmptyComponent,
   });
 
@@ -96,6 +100,11 @@ function GoalNavigator() {
         options={{ headerShown: false }}
       />
       <GoalStack.Screen
+        name={PHYSICAL_ACTIVITY}
+        component={PhysicalActivityScreen}
+        options={{ headerShown: false }}
+      />
+      <GoalStack.Screen
         name={RATING_MODAL}
         component={RatingModal}
         options={{ headerShown: false }}
@@ -128,6 +137,12 @@ const HomeNavigator = () => (
       component={GoalDescription}
       options={{ headerShown: false }}
     />
+    <GoalStack.Screen
+      name={PHYSICAL_ACTIVITY}
+      component={PhysicalActivityScreen}
+      options={{ headerShown: false }}
+    />
+
     <GoalStack.Screen
       name={DETAILED_GOAL}
       component={DetailedGoalScreen}

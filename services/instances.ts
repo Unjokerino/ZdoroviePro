@@ -31,6 +31,9 @@ healthProInstance.interceptors.response.use(
       originalRequest._retry = true;
       return healthProInstance(originalRequest);
     }
-    store.dispatch(signOut());
+    if(isUnauthorized){
+      store.dispatch(signOut());
+
+    }
   }
 );

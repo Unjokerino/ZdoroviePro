@@ -2,22 +2,25 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView,
   Image,
   TouchableOpacity,
 } from "react-native";
-import { Button, IconButton, Modal, Portal, Title } from "react-native-paper";
+import { Text } from "../../components/Themed";
+import { IconButton, Modal, Portal, Title } from "react-native-paper";
 import { Colors, GOAL_INFO } from "../../constants";
+import Button from "../../components/Button";
 
 export default function GoalDescription(props) {
   const { params } = props.route;
-
   const navigation = useNavigation();
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+  const startGoal = () => {
+    navigation.navigate(GOAL_INFO, params);
+  };
   return (
     <View style={styles.root}>
       <View style={styles.header}>
@@ -47,20 +50,11 @@ export default function GoalDescription(props) {
       </View>
       <View style={styles.container}>
         <Button
-          onPress={() => navigation.replace(GOAL_INFO, params)}
-          style={{
-            marginHorizontal: 20,
-            paddingVertical: 10,
-            position: "absolute",
-            bottom: 20,
-            paddingHorizontal: 30,
-            alignSelf: "center",
-            zIndex: 9,
-          }}
+          title="Начать прохождение"
+          onPress={startGoal}
+          style={styles.startGoal}
           mode="contained"
-        >
-          Начать прохождение
-        </Button>
+        />
         <ScrollView
           contentContainerStyle={{
             paddingHorizontal: 22,
@@ -77,7 +71,7 @@ export default function GoalDescription(props) {
               left: 45,
             }}
           />
-          {[1, 2, 3, 4].map((item) => (
+          {[1].map((item) => (
             <View style={{ flexDirection: "row", marginBottom: 21 }}>
               <View
                 style={{
@@ -183,6 +177,15 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     marginLeft: 18,
+  },
+  startGoal: {
+    marginHorizontal: 20,
+    paddingVertical: 10,
+    position: "absolute",
+    bottom: 20,
+    paddingHorizontal: 30,
+    alignSelf: "center",
+    zIndex: 9,
   },
   header: {
     paddingTop: 50,

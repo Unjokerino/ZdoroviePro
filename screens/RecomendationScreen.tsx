@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, ScrollView, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image } from "react-native";
+import { Text } from "../components/Themed";
 import Icons from "../assets/icons";
 import Button from "../components/Button";
 import CategoryGraph from "../components/CategoryGraph";
@@ -8,7 +9,6 @@ import CategoryResult from "../components/CategoryResult";
 import CustomLayout from "../components/CustomLayout";
 import { Title } from "../components/Themed";
 import { Colors } from "../constants";
-import { CardProps } from "./HealthProfileScreen";
 import { Answers } from "./TestScreen";
 
 export default function RecomendationScreen({

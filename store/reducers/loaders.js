@@ -8,6 +8,12 @@ import {
   SIGN_IN_FAIL,
   SIGN_IN_LOAD,
   SIGN_IN_SUCCESS,
+  USER_GOALS_LOAD,
+  USER_GOALS_FAIL,
+  UPDATE_USER_GOAL_FAIL,
+  UPDATE_USER_GOAL_LOAD,
+  UPDATE_USER_GOAL_SUCCESS,
+  USER_GOALS_SUCCESS,
 } from "../action-types";
 
 const initialState = {
@@ -32,6 +38,14 @@ export default (state = initialState, action) => {
     case MAIN_TEST_LOAD:
     case SECOND_TEST_LOAD:
       return on("test");
+    case USER_GOALS_LOAD:
+    case UPDATE_USER_GOAL_LOAD:
+      return on("userGoals");
+    case USER_GOALS_SUCCESS:
+    case UPDATE_USER_GOAL_SUCCESS:
+    case USER_GOALS_FAIL:
+    case UPDATE_USER_GOAL_FAIL:
+      return off("userGoals");
     case SECOND_TEST_FAIL:
     case SECOND_TEST_SUCCESS:
     case MAIN_TEST_SUCCESS:

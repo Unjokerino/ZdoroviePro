@@ -3,11 +3,11 @@ import moment from "moment";
 import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
+import { Text } from "./Themed";
 import { ScrollView } from "react-native-gesture-handler";
 import { IconButton, Title } from "react-native-paper";
 import { useDispatch } from "react-redux";

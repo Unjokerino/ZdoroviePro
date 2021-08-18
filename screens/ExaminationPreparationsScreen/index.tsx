@@ -1,11 +1,11 @@
 import React, { useRef, useState } from "react";
-import { View, Text, ScrollView, TextInput, StyleSheet } from "react-native";
+import { View, ScrollView, TextInput, StyleSheet } from "react-native";
 import {
-  MAIN_URL,
   PROFESSIONAL_EXAMINATION_SCREEN,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
 } from "../../constants";
+import { Text } from "../../components/Themed";
 import * as Animatable from "react-native-animatable";
 import Button from "../../components/Button";
 import CustomLayout from "../../components/CustomLayout";

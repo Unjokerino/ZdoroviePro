@@ -15,6 +15,8 @@ export const DETAILED_GOAL_STACK = "DETAILED_GOAL_STACK";
 export const TAKE_TEST = "Пройти тест";
 export const TEST_SCREEN = "Тест";
 export const GOAL_DESCRIPTION = "Информация о Цели";
+//TODO: TEMPORARY
+export const PHYSICAL_ACTIVITY = "PHYSICAL_ACTIVITY";
 export const EXAMINATION_SCREEN = "Диспансеризация";
 export const PROFESSIONAL_EXAMINATION_SCREEN = "Профосмотр";
 export const PROFESSIONAL_PREPARATIONS_SCREEN =

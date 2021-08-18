@@ -1,5 +1,11 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { ScrollView, Image, View, LayoutChangeEvent, Text } from "react-native";
+import {
+  ScrollView,
+  Image,
+  View,
+  LayoutChangeEvent,
+  Animated,
+} from "react-native";
 import {
   Colors,
   MAIN_URL,
@@ -14,25 +20,52 @@ import {
   QUESTION_VARIABLE,
   QUESTION_VARIANTS,
   QUSETION_CUSTOM_VARIANTS,
-  RANDOM_IMAGE,
 } from "../../constants";
 import { Answer } from "../../screens/TestScreen";
-import { Condition, Question as QuestionProps } from "../../types/store/tests";
+import { Question as QuestionProps } from "../../types/store/tests";
 import Button from "../Button";
 import Question from "../Question";
 import styles from "./styles";
+import { Text } from "../../components/Themed";
 
 interface TestCardProps extends QuestionProps {
-  setAnswers: () => void;
+  setAnswers: (answer: Answer) => void;
   nextQuestion: (answer: Answer) => void;
   answers: Answer;
 }
 
 const TestCard = (question: TestCardProps) => {
+  const [scrollY] = useState(new Animated.Value(0));
+  const [containerWidth, setContainerWidth] = useState<number>(0);
+  const width = scrollY.interpolate({
+    inputRange: [0, 40],
+    outputRange: [75, containerWidth],
+    extrapolate: "clamp",
+  });
+
+  const backgroundColor = scrollY.interpolate({
+    inputRange: [0, 40],
+    outputRange: ["#fff", Colors.light.header],
+    extrapolate: "clamp",
+  });
+
+  const color = scrollY.interpolate({
+    inputRange: [0, 40],
+    outputRange: ["#000", "#fff"],
+    extrapolate: "clamp",
+  });
+
+  const borderRadius = scrollY.interpolate({
+    inputRange: [0, 40],
+    outputRange: [25, 0],
+    extrapolate: "clamp",
+  });
+
   const { title, text, icon, setAnswers, answers, nextQuestion, select } =
     question;
 
   const uri = `${MAIN_URL}/TestIcons/${icon?.name}.png`;
+
   const renderContent = useCallback(() => {
     switch (question.select?.type) {
       case QUESTION_CONDITIONAL:
@@ -98,30 +131,77 @@ const TestCard = (question: TestCardProps) => {
         );
     }
   }, [question]);
+
   const renderTitle = () => {
-    return title ? <Text style={styles.title}>{title}</Text> : <View />;
+    return title ? (
+      <Animated.Text style={[styles.title, { color }]}>{title}</Animated.Text>
+    ) : (
+      <View />
+    );
   };
   const renderSubTitle = () => {
-    return text ? <Text style={styles.subtitle}>{text}</Text> : <View />;
+    return text ? (
+      <Animated.Text style={[styles.subtitle, { color }]}>{text}</Animated.Text>
+    ) : (
+      <View />
+    );
   };
 
-  const onLayout = (event: LayoutChangeEvent) => {};
+  const onLayout = (event: LayoutChangeEvent) => {
+    setContainerWidth(event.nativeEvent.layout.width);
+  };
 
   return (
-    <ScrollView
-      onLayout={onLayout}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.contentContainer}
-      style={styles.container}
-    >
-      <View style={styles.iconContainer}>
-        <Image style={styles.icon} resizeMode="contain" source={{ uri }} />
-      </View>
+    <>
+      <Animated.View
+        style={{
+          backgroundColor,
+          alignItems: "center",
+          position: "relative",
+          width: "100%",
+          marginBottom: 20,
+          borderRadius: 20,
+        }}
+      >
+        <Animated.View
+          style={[
+            styles.iconContainer,
+            {
+              width,
 
-      {renderTitle()}
-      {renderSubTitle()}
-      {renderContent()}
-    </ScrollView>
+              borderRadius: 20,
+              borderTopLeftRadius: borderRadius,
+              borderTopRightRadius: borderRadius,
+            },
+          ]}
+        >
+          <Image style={styles.icon} resizeMode="contain" source={{ uri }} />
+        </Animated.View>
+        {renderTitle()}
+        {renderSubTitle()}
+      </Animated.View>
+
+      <ScrollView
+        // onScroll={Animated.event(
+        //   [
+        //     {
+        //       nativeEvent: {
+        //         contentOffset: {
+        //           y: scrollY,
+        //         },
+        //       },
+        //     },
+        //   ],
+        //   { useNativeDriver: false }
+        // )}
+        onLayout={onLayout}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.contentContainer}
+        style={styles.container}
+      >
+        {renderContent()}
+      </ScrollView>
+    </>
   );
 };
 

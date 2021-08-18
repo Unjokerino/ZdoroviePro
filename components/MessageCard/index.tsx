@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Caption } from "react-native-paper";
 import { Colors } from "../../constants";
 import styles from "./styles";
+import { Text } from "../Themed";
 
 export default function MessageCard({
   title,

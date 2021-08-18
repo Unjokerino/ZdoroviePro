@@ -1,4 +1,4 @@
-import { Answer, Answers } from "../../screens/TestScreen";
+import { Answers } from "../../screens/TestScreen";
 
 export interface TestState {
   answers: Answers[];
@@ -51,18 +51,18 @@ export interface Option {
 }
 
 export interface Question {
-  Question_Extras: QuestionsExtra[];
-  extra_questions: QuestionsExtra[];
-  text: null | string;
-  title: string;
-  icon: {
+  Question_Extras?: QuestionsExtra[];
+  extra_questions?: QuestionsExtra[];
+  text?: null | string;
+  title?: string;
+  icon?: {
     icon_type: string;
     id: string;
     name: string;
   };
-  select: Select;
-  questionsExtra: QuestionsExtra[];
-  conditions: Condition[];
+  select?: Select;
+  questionsExtra?: QuestionsExtra[];
+  conditions?: Condition[];
 }
 
 export interface Select {

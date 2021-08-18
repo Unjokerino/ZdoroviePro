@@ -1,11 +1,7 @@
 import * as React from "react";
-import {
-  Text,
-  StyleSheet,
-  StyleProp,
-  TextStyle,
-  TextProps,
-} from "react-native";
+import { StyleSheet, StyleProp, TextStyle, TextProps } from "react-native";
+
+import { Text } from "./Themed";
 
 export default function ({
   points,

@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingVertical: 38,
+    paddingBottom: 38,
     justifyContent: "center",
     alignItems: "center",
     flexGrow: 1,
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   title: {
     paddingHorizontal: 25,
     textAlign: "center",
-    marginBottom: 30,
+
     fontWeight: "bold",
     fontSize: 18,
   },

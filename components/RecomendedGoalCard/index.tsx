@@ -4,13 +4,14 @@ import {
   View,
   ViewStyle,
   Image,
-  Text,
 } from "react-native";
 import React, { useCallback, useMemo, useState } from "react";
 import styles from "./styles";
-import { Button, Title } from "react-native-paper";
+import { Title } from "react-native-paper";
 import Progress from "../Progress";
 import { Goal } from "../../types/store/goals";
+import { Text } from "../Themed";
+import Button from "../Button";
 
 export interface GoalProps extends Goal {
   style?: StyleProp<ViewStyle>;
@@ -41,7 +42,6 @@ export default function RecomendedGoalCard({
   status,
 }: GoalProps) {
   const active = status === "active";
-  const [translatedTitle, setTranslatedTitle] = useState();
   const ProgressView = () => (
     <View style={styles.progressBar}>
       <View style={styles.progressInfo}>
@@ -100,17 +100,21 @@ export default function RecomendedGoalCard({
         <Text style={styles.subtitle}>{duration} дней</Text>
         {active ? <ProgressView /> : <Description />}
       </View>
-      <TouchableOpacity style={{ width: 180, marginTop: -20, marginLeft: 20 }}>
+      <View style={{ width: 180, marginTop: -20, marginLeft: 20 }}>
         <Button
           icon="menu"
-          color="white"
-          style={{ opacity: 1, borderRadius: 8 }}
+          textColor="#000"
+          backgroundColor="white"
+          style={{
+            opacity: 1,
+            borderRadius: 8,
+            paddingVertical: 6,
+          }}
           mode="contained"
           onPress={onPress}
-        >
-          {buttonMessage}
-        </Button>
-      </TouchableOpacity>
+          title={buttonMessage}
+        />
+      </View>
       <Image
         source={require("../../assets/images/person.png")}
         style={styles.personImage}

@@ -1,18 +1,23 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import {
   View,
   StyleSheet,
-  Text,
   Image,
   TouchableOpacity,
   ScrollView,
   ImageBackground,
 } from "react-native";
+import { Text } from "../../components/Themed";
 import { Modal, Portal, Title } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../components/Button";
-import { Colors, RATING_MODAL } from "../../constants";
+import {
+  Colors,
+  GOAL_DESCRIPTION,
+  PHYSICAL_ACTIVITY,
+  RATING_MODAL,
+} from "../../constants";
 import { RootState } from "../../types/store";
 //@ts-ignore
 import { getUserTask, failUserGoal } from "../../store/actions";
@@ -28,14 +33,55 @@ export default function DetailedGoalScreen() {
 
   const hideModal = () => setVisible(false);
   const {
-    authReducer: { identity },
-    goalsReducer: { currentGoal },
+    goalsReducer: { currentGoal, currentTask },
   } = useSelector((state: RootState) => state);
 
   const { complete_days, duration } = currentGoal?.purpose || {
     complete_days: 0,
     duration: 0,
   };
+
+  const ActionButton = useCallback(() => {
+    switch (currentGoal.purpose?.description) {
+      case "Улучшить физическую активность":
+        return (
+          <Button
+            onPress={() => {
+              navigation.navigate(
+                currentGoal.status === "active"
+                  ? PHYSICAL_ACTIVITY
+                  : GOAL_DESCRIPTION,
+                { currentGoal, leaveRating }
+              );
+            }}
+            style={styles.endButton}
+            backgroundColor="#FF8181"
+            textColor="#fff"
+            title={"Начать"}
+          />
+        );
+      case "Есть только правильную пищу":
+        return (
+          <Button
+            onPress={showModal}
+            style={styles.endButton}
+            backgroundColor="#FF8181"
+            textColor="#fff"
+            title={"Хочу вредной еды"}
+          />
+        );
+      default:
+        return (
+          <Button
+            onPress={showModal}
+            style={styles.endButton}
+            backgroundColor="#FF8181"
+            textColor="#fff"
+            title={"Хочу курить"}
+          />
+        );
+    }
+  }, []);
 
   const closeGoal = () => {
     dispatch(failUserGoal());
@@ -136,10 +182,10 @@ export default function DetailedGoalScreen() {
           <Text style={styles.eventTitle}>{event.title}</Text>
           <View style={styles.dateContainer}>
             <Text style={styles.eventDate}>
-              {moment(event.created_date).format("MM/DD/YYYY")}
+              {moment.utc(event.created_date).format("MM/DD/YYYY")}
             </Text>
             <Text style={styles.eventDate}>
-              {moment(event.created_date).format("hh:mm")}
+              {moment.utc(event.created_date).format("hh:mm")}
             </Text>
           </View>
         </View>
@@ -147,7 +193,44 @@ export default function DetailedGoalScreen() {
     );
   };
 
-  const defaultImage = require("../../assets/images/smokeBackground.png");
+  const Feedback = () => {
+    const isActive =
+      moment(currentTask?.end_date).diff(moment(), "seconds") < 0;
+
+    return (
+      <TouchableOpacity onPress={leaveRating} style={styles.feedBackContainer}>
+        <View
+          style={[
+            styles.feedbackIndicator,
+            { backgroundColor: isActive ? "#4DD0E1" : "#FF8181" },
+          ]}
+        />
+        <View>
+          <Text>
+            {isActive
+              ? "Расскажите о Ваших ощущениях сегодня"
+              : "На сегодня все, спасибо за фидбек :)"}
+          </Text>
+          {isActive && (
+            <Text>
+              До {moment.utc(currentTask?.end_date).format("DD-MM-YY  HH:mm ")}
+            </Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const defaultImage = useMemo(() => {
+    switch (currentGoal.purpose?.description) {
+      case "Улучшить физическую активность":
+        return require("../../assets/images/avocadoBackground.png");
+      case "Есть только правильную пищу":
+        return require("../../assets/images/home.png");
+      default:
+        return require("../../assets/images/smokeBackground.png");
+    }
+  }, []);
   return (
     <ScrollView>
       <ImageBackground
@@ -155,20 +238,22 @@ export default function DetailedGoalScreen() {
         resizeMode="stretch"
         source={currentGoal?.background || defaultImage}
       >
-        {threes.map((three, index) => {
-          return (
-            <Image
-              style={{
-                height: 200,
-                width: 100,
-                left: 10 + index * 25,
-                bottom: 50 + index * 8,
-              }}
-              resizeMode="contain"
-              source={three[0].source}
-            />
-          );
-        })}
+        {currentGoal.purpose?.description ===
+          "Избавиться от никотиновой зависимости" &&
+          threes.map((three, index) => {
+            return (
+              <Image
+                style={{
+                  height: 200,
+                  width: 100,
+                  left: 10 + index * 25,
+                  bottom: 50 + index * 8,
+                }}
+                resizeMode="contain"
+                source={three[0].source}
+              />
+            );
+          })}
       </ImageBackground>
       <View style={styles.mainContainer}>
         <Title>День {complete_days}</Title>
@@ -178,18 +263,9 @@ export default function DetailedGoalScreen() {
             {Math.round((complete_days || 0 / duration) * 100) || 0}%
           </Text>
         </View>
-        <Button
-          onPress={showModal}
-          style={styles.endButton}
-          backgroundColor="#FF8181"
-          textColor="#fff"
-          title={"Хочу курить"}
-        />
+        <ActionButton />
       </View>
-      <TouchableOpacity onPress={leaveRating} style={styles.feedBackContainer}>
-        <View style={styles.feedbackIndicator} />
-        <Text>Расскажите о Ваших ошущениях сегодня</Text>
-      </TouchableOpacity>
+      <Feedback />
       <View>
         <Title style={{ marginHorizontal: 20 }}>Ход событий</Title>
         {currentGoal?.event_history

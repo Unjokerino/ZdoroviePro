@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Image, TextInput, Text, Linking } from "react-native";
+import { Image, TextInput, Linking } from "react-native";
+import { Text } from "../../components/Themed";
 import { Checkbox } from "react-native-paper";
 import { View } from "../../components/Themed";
 import styles from "./styles";

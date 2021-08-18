@@ -1,6 +1,6 @@
 import React, { ReactChild, useCallback, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "../../Themed";
 import { typography } from "../../../constants/Typography";
 import { Option } from "../../../types/store/tests";
 import RadioButton from "../../RadioButton";

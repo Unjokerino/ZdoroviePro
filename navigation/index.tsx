@@ -1,6 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { ColorSchemeName, Text, View, ActivityIndicator } from "react-native";
+import { ColorSchemeName, View, ActivityIndicator } from "react-native";
+import { Text } from "../components/Themed";
 import { LoginStackParamList, RootStackParamList } from "../types";
 import BottomTabNavigator from "./BottomTabNavigator";
 import {
@@ -52,7 +53,7 @@ import { useDispatch, useSelector } from "react-redux";
 //@ts-ignore
 import { hideSnackBar } from "../store/actions";
 import { RootState } from "../types/store";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import init from "../utils/init";
 import RegistrationScreen from "../screens/RegistrationScreen";
 import TestFillInfo from "../screens/TestFillInfo";

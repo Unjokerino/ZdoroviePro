@@ -1,24 +1,9 @@
-import React, { ReactChild, useCallback, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  SectionList,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
-import {} from "react-native-paper";
+import React, { useState } from "react";
+import { View, SectionList, TouchableOpacity } from "react-native";
+import { Text } from "../../Themed";
 import { Answer } from "../../../screens/TestScreen";
-import Button from "../../Button";
 import { styles } from "./styles";
-import Icons from "../../../assets/icons";
-import { typography } from "../../../constants/Typography";
-import {
-  Condition,
-  Question,
-  Select,
-  Option,
-} from "../../../types/store/tests";
+import { Select, Option } from "../../../types/store/tests";
 import RadioButton from "../../RadioButton";
 
 export default function GroupOptions({
@@ -28,7 +13,6 @@ export default function GroupOptions({
   select: Select;
   nextQuestion: (answer: Answer) => void;
 }) {
-  const [text, setText] = useState("");
   const [answer, setAnswer] = useState<Answer>();
   const DATA = select.group_options.map((option) => ({
     title: option.title,

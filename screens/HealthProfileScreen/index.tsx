@@ -1,40 +1,18 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { Paragraph, Title } from "../../components/Themed";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "../../components/Themed";
 import { useDispatch, useSelector } from "react-redux";
-
 import styles from "./styles";
-
 import CustomLayout from "../../components/CustomLayout";
-import Icons from "../../assets/icons";
 import Button from "../../components/Button";
-import {
-  Colors,
-  GOALS_SCREEN,
-  RECOMENDATION_SCREEN,
-  SCREEN_WIDTH,
-} from "../../constants";
+import { Colors, GOALS_SCREEN, RECOMENDATION_SCREEN } from "../../constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "../../types/store";
-import { Answer, Answers } from "../TestScreen";
+import { Answers } from "../TestScreen";
 import { useNavigation } from "@react-navigation/native";
 import CategoryResult from "../../components/CategoryResult";
 import CategoryGraph from "../../components/CategoryGraph";
-import {
-  VictoryArea,
-  VictoryBar,
-  VictoryChart,
-  VictoryLabel,
-  VictoryPolarAxis,
-  VictoryScatter,
-  VictoryTheme,
-} from "victory-native";
+import { VictoryBar, VictoryLabel, VictoryTheme } from "victory-native";
 
 export interface CardProps {
   title: string;
@@ -113,7 +91,6 @@ export default function HealthProfileScreen() {
   };
 
   const Card = ({ answers, index }: { answers: Answers; index: number }) => {
-    console.warn(answers);
     const icon =
       currentTest.categories && currentTest.categories[index].category.icon;
 

@@ -1,6 +1,5 @@
-import React, { ReactChild, useCallback, useState } from "react";
-import { View, Text, TextInput } from "react-native";
-import {} from "react-native-paper";
+import React, { useState } from "react";
+import { View, TextInput } from "react-native";
 import { Answer } from "../../../screens/TestScreen";
 import Button from "../../Button";
 import { styles } from "./styles";

@@ -1,71 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   StatusBar,
   Animated,
-  Image,
-  TouchableOpacity,
-  ScrollView,
   FlatList,
-  ImageBackground,
   RefreshControl,
 } from "react-native";
-import Icons from "../../assets/icons";
-import StepCard from "../../components/StepCard";
 import { Text } from "../../components/Themed";
 import {
-  SCREEN_WIDTH,
-  RANDOM_IMAGE,
-  Colors,
-  RANDOM_USER_URL,
-  TAKE_TEST,
-  DETAILED_GOAL,
   GOAL_DESCRIPTION,
   DETAILED_GOAL_STACK,
+  PHYSICAL_ACTIVITY,
 } from "../../constants";
 import styles from "./styles";
-import { Caption, Divider } from "react-native-paper";
-import useColorScheme from "../../hooks/useColorScheme";
-import { User } from "../../constants/Types";
-import { path } from "ramda";
-import RecomendedGoalCard, {
-  GoalProps,
-} from "../../components/RecomendedGoalCard";
+import RecomendedGoalCard from "../../components/RecomendedGoalCard";
 import CustomLayout from "../../components/CustomLayout";
-import api from "../../services/api";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../types/store";
 import {
   getUserGoals,
   setCurrentGoal,
   getGoals,
   updateUserGoal,
+  //@ts-ignore
 } from "../../store/actions";
 import { Goal } from "../../types/store/goals";
+import selectState from "../../store/selectors/goals";
 
 export default function GoalsScreen() {
   const navigation = useNavigation();
   StatusBar.setBarStyle("light-content");
-  const [refreshing, setRefreshing] = useState(false);
   const scroll = new Animated.Value(0);
   const [value, setValue] = useState(0);
-  const {
-    goalsReducer: { userGoals, goals },
-  } = useSelector((state: RootState) => state);
 
-  const filteredGoals = goals.filter((goal) => {
-    if (userGoals?.length === 0) return true;
-    return userGoals.find((ug) => ug.id === goal.id);
-  });
+  const {
+    goalsSelector: { userGoals, goals },
+    isGoalsLoading,
+    isUserGoalsLoading,
+  } = useSelector(selectState);
+
+  const filteredGoals = useMemo(
+    () =>
+      goals.filter((goal) => {
+        return !userGoals.find((userGoal) => goal.id === userGoal.purpose?.id);
+      }),
+    [userGoals, goals]
+  );
 
   const dispatch = useDispatch();
 
-  const getInitialData = () => {
-    setRefreshing(true);
+  const getInitialData = async () => {
     dispatch(getUserGoals());
     dispatch(getGoals());
-    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -86,6 +72,14 @@ export default function GoalsScreen() {
       item.status === "active" ? DETAILED_GOAL_STACK : GOAL_DESCRIPTION,
       item
     );
+
+    // //Change it to actual goal when API is done
+    // if (item.purpose?.id === "4caa0639-08c1-47b0-9a43-6bc1800b3da5") {
+    //   console.warn(item.purpose?.id === "4caa0639-08c1-47b0-9a43-6bc1800b3da5");
+
+    // } else {
+
+    // }
   };
 
   const renderContent = () => (
@@ -95,7 +89,7 @@ export default function GoalsScreen() {
           scrollEnabled={false}
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
+              refreshing={isUserGoalsLoading}
               onRefresh={getInitialData}
             />
           }
@@ -121,6 +115,12 @@ export default function GoalsScreen() {
         <FlatList
           showsHorizontalScrollIndicator={false}
           data={filteredGoals}
+          refreshControl={
+            <RefreshControl
+              refreshing={isGoalsLoading}
+              onRefresh={getInitialData}
+            />
+          }
           renderItem={({ item }) => (
             <RecomendedGoalCard
               style={styles.card}

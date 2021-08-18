@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import {
   View,
-  Text,
   Animated,
   TouchableOpacity,
   Image,
@@ -9,6 +8,7 @@ import {
   StatusBar,
   FlatList,
 } from "react-native";
+import { Text } from "../../components/Themed";
 import styles from "./styles";
 import Icons from "../../assets/icons";
 import { User } from "../../constants/Types";
@@ -22,7 +22,7 @@ import {
   SCREEN_WIDTH,
   TAKE_TEST,
 } from "../../constants";
-import { Button, Caption, Modal, Portal, Title } from "react-native-paper";
+import { Modal, Portal, Title } from "react-native-paper";
 import GoalCard from "../../components/GoalCard";
 import MessageCard from "../../components/MessageCard";
 

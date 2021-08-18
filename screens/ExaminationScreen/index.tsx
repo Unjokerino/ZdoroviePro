@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
+import { Text } from "../../components/Themed";
 import { Picker } from "@react-native-picker/picker";
 import { Button, Caption, Divider, Title, TextInput } from "react-native-paper";
 import CustomLayout from "../../components/CustomLayout";

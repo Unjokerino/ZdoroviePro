@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "../Themed";
 import { IS_IOS, MAIN_URL, SCREEN_HEIGHT } from "../../constants";
 import Button from "../Button";
 import * as Animatable from "react-native-animatable";

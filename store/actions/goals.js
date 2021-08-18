@@ -78,7 +78,6 @@ export const getUserGoals = () => async (dispatch, state) => {
   try {
     const id = store.getState().authReducer.identity.id;
     const { data } = await api.users.fetchGoals(id);
-
     dispatch({ type: USER_GOALS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
@@ -124,9 +123,7 @@ export const getUserTask = () => async (dispatch) => {
     const id = store.getState().authReducer.identity.id;
     const purposeId = getPurposeId();
     const { data } = await api.tasks.fetchTasks(id, purposeId);
-    if (data.length === 0) {
-      dispatch(createFirstTask());
-    }
+
     dispatch({ type: TASK_SUCCESS, payload: data[0] });
   } catch (error) {
     dispatch({ type: SHOW_SNACK_BAR, payload: error.message });
