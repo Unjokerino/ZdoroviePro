@@ -5,7 +5,7 @@ import { Title } from "react-native-paper";
 import Button from "../../components/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { GoalProps } from "../../components/RecomendedGoalCard";
-import { Colors, DETAILED_GOAL } from "../../constants";
+import { Colors, DETAILED_GOAL, GOALS_SCREEN } from "../../constants";
 import { RootState } from "../../types/store";
 //@ts-ignore
 import { startUserGoal } from "../../store/actions";
@@ -23,7 +23,7 @@ export default function GoalInfo(props: {
   const startTheGoal = async () => {
     dispatch(startUserGoal());
 
-    navigation.replace(DETAILED_GOAL, params);
+    navigation.replace(GOALS_SCREEN, params);
   };
 
   return (

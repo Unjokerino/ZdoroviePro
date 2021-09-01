@@ -69,12 +69,7 @@ const TestCard = (question: TestCardProps) => {
   const renderContent = useCallback(() => {
     switch (question.select?.type) {
       case QUESTION_CONDITIONAL:
-        return (
-          <Question.Conditional
-            nextQuestion={nextQuestion}
-            setAnswers={setAnswers}
-          />
-        );
+        return <Question.Conditional {...question} />;
 
       case QUESTION_CUSTOM_SELECT_CONDITIONAL:
       case QUESTION_CUSTOM_CONDITIONAL:
@@ -115,6 +110,7 @@ const TestCard = (question: TestCardProps) => {
             nextQuestion={nextQuestion}
           />
         );
+
       case QUSETION_CUSTOM_VARIANTS:
         return <Question.CustomVariants {...question} />;
       case QUESTION_GROUP_OPTIONS:
@@ -159,10 +155,13 @@ const TestCard = (question: TestCardProps) => {
           alignItems: "center",
           position: "relative",
           width: "100%",
-          marginBottom: 20,
+
           borderRadius: 20,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
         }}
       >
+        <Text>{question.select?.type}</Text>
         <Animated.View
           style={[
             styles.iconContainer,

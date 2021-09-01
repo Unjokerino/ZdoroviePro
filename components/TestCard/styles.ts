@@ -5,6 +5,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     borderRadius: 20,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
     flex: 1,
   },
   contentContainer: {

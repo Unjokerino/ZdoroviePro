@@ -43,8 +43,12 @@
           "apiKey": "653596096820-2s3rov7ro7im5a48ln5s364d2s9skric.apps.googleusercontent.com"
         }
       },
-      "permissions": [],
-      "versionCode": 3,
+      "permissions": [  
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ],
+      "versionCode": 4,
       "package": "com.mironov.healthpro"
     },
     "web": {

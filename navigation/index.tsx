@@ -16,6 +16,7 @@ import {
   NavigationContainer,
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
+  useNavigation,
 } from "@react-navigation/native";
 import {
   DarkTheme as PaperDarkTheme,
@@ -29,14 +30,17 @@ import LoginScreen from "../screens/LoginScreen";
 import TakeTestScreen from "../screens/TakeTestScreen";
 import { SecondPartDescriptionScreen, TestScreen } from "../screens";
 import {
+  ACHIEVEMENTS_SCREEN,
   CONGRATULATIONS_SCREEN,
   DESCRIPTION_SCREEN,
   EXAMINATION_SCREEN,
   GOALS_SCREEN,
   HEALTH_PROFILE_SCREEN,
+  IS_IOS,
   LOGIN_SCREEN,
   PROFESSIONAL_EXAMINATION_SCREEN,
   PROFESSIONAL_PREPARATIONS_SCREEN,
+  PROFILE_SCREEN,
   RECOMENDATION_SCREEN,
   REGISTRATION_SCREEN,
   SECOND_PART_DESCRIPTION_SCREEN,
@@ -139,22 +143,29 @@ function LoginNavigator() {
 
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent(
-  props: DrawerContentComponentProps<DrawerContentOptions>
-) {
+function CustomDrawerContent({
+  navigation,
+}: DrawerContentComponentProps<DrawerContentOptions>) {
+  const {
+    authReducer: { identity },
+  } = useSelector((state: RootState) => state);
   const circle = {
     width: 50,
     height: 50,
     borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#3B5A9A",
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingTop: IS_IOS ? 0 : 30 }}>
       <IconButton
-        onPress={() => props.navigation.closeDrawer()}
+        onPress={() => navigation.closeDrawer()}
         icon="close"
         color="#000"
         style={{ marginTop: 20 }}
+        accessibilityComponentType={undefined}
+        accessibilityTraits={undefined}
       />
       <Text
         style={{
@@ -165,10 +176,13 @@ function CustomDrawerContent(
           marginBottom: 36,
         }}
       >
-        Юлия Никифоровна
+        {identity.email}
       </Text>
-      <View style={{ paddingLeft: 38, marginBottom: 10 }}>
-        <Text style={{ fontSize: 21, marginBottom: 10 }}>
+      <View style={{ paddingLeft: 28, marginBottom: 10 }}>
+        <Text
+          onPress={() => navigation.navigate("Test", { screen: TAKE_TEST })}
+          style={{ fontSize: 21, marginBottom: 10 }}
+        >
           Профилактический медицинский осмотр / Диспансеризация
         </Text>
         <Text style={{ fontSize: 17, opacity: 0.6 }}>
@@ -213,10 +227,38 @@ function CustomDrawerContent(
           },
         ]}
       >
-        <View style={circle}></View>
-        <View style={circle}></View>
-        <View style={circle}></View>
-        <View style={circle}></View>
+        <View style={circle}>
+          <IconButton
+            color="white"
+            icon={require("../assets/images/vk.png")}
+            accessibilityComponentType={undefined}
+            accessibilityTraits={undefined}
+          />
+        </View>
+        <View style={circle}>
+          <IconButton
+            color="white"
+            icon={require("../assets/images/fb.png")}
+            accessibilityComponentType={undefined}
+            accessibilityTraits={undefined}
+          />
+        </View>
+        <View style={circle}>
+          <IconButton
+            color="white"
+            icon={require("../assets/images/insta.png")}
+            accessibilityComponentType={undefined}
+            accessibilityTraits={undefined}
+          />
+        </View>
+        <View style={circle}>
+          <IconButton
+            color="white"
+            icon={require("../assets/images/youtube.png")}
+            accessibilityComponentType={undefined}
+            accessibilityTraits={undefined}
+          />
+        </View>
       </View>
     </View>
   );
@@ -245,13 +287,10 @@ function DrawerNavigator() {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      initialRouteName="Home"
+      initialRouteName={testStatus ? "Home" : "Test"}
     >
-      {testStatus ? (
-        <Drawer.Screen name="Home" component={BottomTabNavigator} />
-      ) : (
-        <Drawer.Screen name="Home" component={TestNavigator} />
-      )}
+      <Drawer.Screen name="Home" component={BottomTabNavigator} />
+      <Drawer.Screen name="Test" component={TestNavigator} />
     </Drawer.Navigator>
   );
 }

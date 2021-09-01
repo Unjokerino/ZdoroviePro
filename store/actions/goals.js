@@ -91,6 +91,7 @@ export const startUserGoal = () => async (dispatch) => {
     const userId = store.getState().authReducer.identity.id;
     const purposeId = getPurposeId();
     await api.goals.startUserGoal({ userId, purposeId });
+
     dispatch({ type: START_USER_GOAL_SUCCESS });
     dispatch(getUserGoals());
   } catch (error) {

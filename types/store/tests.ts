@@ -48,6 +48,7 @@ export interface Option {
   order: number;
   points: number;
   title: string;
+  text: string;
 }
 
 export interface Question {

@@ -1,18 +1,11 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, Image } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
-import { Checkbox } from "react-native-paper";
+import { ScrollView } from "react-native-gesture-handler";
 import Button from "../../components/Button";
-import {
-  CONGRATULATIONS_SCREEN,
-  PROFESSIONAL_EXAMINATION_SCREEN,
-  PROFESSIONAL_PREPARATIONS_SCREEN,
-  SECOND_PART_DESCRIPTION_SCREEN,
-} from "../../constants";
+import { CONGRATULATIONS_SCREEN, GOALS_SCREEN } from "../../constants";
 import { typography } from "../../constants/Typography";
 import { RootStackParamList } from "../../types";
-import * as Animatable from "react-native-animatable";
 import { Text, Title } from "../../components/Themed";
 import { Video } from "expo-av";
 
@@ -25,7 +18,7 @@ export default function SilverCongratulationsScreen({
   >;
 }) {
   const goToSecondPart = () => {
-    navigation.replace(SECOND_PART_DESCRIPTION_SCREEN);
+    navigation.replace(GOALS_SCREEN);
   };
 
   return (
@@ -137,7 +130,7 @@ export default function SilverCongratulationsScreen({
           style={{ marginHorizontal: 30, marginBottom: 20 }}
           textColor="white"
           backgroundColor="#6360FF"
-          title="Пройди углубленный скринииг"
+          title="Вернуться к целям"
           onPress={goToSecondPart}
         />
       </ScrollView>

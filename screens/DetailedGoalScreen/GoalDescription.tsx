@@ -19,7 +19,7 @@ export default function GoalDescription(props) {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const startGoal = () => {
-    navigation.navigate(GOAL_INFO, params);
+    navigation.replace(GOAL_INFO, params);
   };
   return (
     <View style={styles.root}>

@@ -4,19 +4,29 @@ import { Text } from "../../Themed";
 import { typography } from "../../../constants/Typography";
 import { Option } from "../../../types/store/tests";
 import RadioButton from "../../RadioButton";
+import { Answer } from "../../../screens/TestScreen";
 
 export default function Radio({
   setAnswers,
   options,
+  nextQuestion,
 }: {
   setAnswers: (_: any) => void;
   options: Option[];
+  nextQuestion: (answer: Answer, shouldSkipCategory?: boolean) => void;
 }) {
   const [checkedIndex, setcheckedIndex] = useState(-1);
 
   const changeAnswer = (index: number) => {
     setcheckedIndex(index);
     setAnswers({ option: options[index] });
+    nextQuestion({
+      option: {
+        id: options[index].id,
+        text: options[index].title,
+      },
+      points: options[index].points,
+    });
   };
   return (
     <View>

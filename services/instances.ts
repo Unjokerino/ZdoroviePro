@@ -14,6 +14,7 @@ healthProInstance.interceptors.request.use(async (config) => {
 
   config.headers = {
     Authorization: access_token ? `Bearer ${access_token}` : "",
+    localDate: new Date().toUTCString(),
   };
   return config;
 });
@@ -31,9 +32,8 @@ healthProInstance.interceptors.response.use(
       originalRequest._retry = true;
       return healthProInstance(originalRequest);
     }
-    if(isUnauthorized){
+    if (isUnauthorized) {
       store.dispatch(signOut());
-
     }
   }
 );

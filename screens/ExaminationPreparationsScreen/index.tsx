@@ -73,7 +73,7 @@ export default function ExaminationPreparationsScreen({ navigation }) {
     </View>
   );
   return (
-    <CustomLayout openDrawer={navigation.openDrawer}>
+    <CustomLayout>
       <ScrollView
         scrollEnabled={false}
         showsHorizontalScrollIndicator={false}

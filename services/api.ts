@@ -9,20 +9,27 @@ import {
 } from "../constants";
 import { MAIN_TEST_URL } from "../constants";
 import { healthProInstance, ssoInstance } from "./instances";
-
+const defaultParams = {
+  localDate: new Date(),
+};
 export default {
   tests: {
-    fetchMainTest: () => healthProInstance.get(MAIN_TEST_URL),
-    fetchSecondTest: () => healthProInstance.get(SECOND_TEST_URL),
+    fetchMainTest: () =>
+      healthProInstance.get(MAIN_TEST_URL, { params: defaultParams }),
+    fetchSecondTest: () =>
+      healthProInstance.get(SECOND_TEST_URL, { params: defaultParams }),
   },
   auth: {
     signIn: (params: { email: string; password: string }) =>
-      ssoInstance.post(SIGN_IN_URL, params),
+      ssoInstance.post(SIGN_IN_URL, { ...params, ...defaultParams }),
     signUp: (params: { email: string; password: string }) =>
       ssoInstance.post(SIGN_UP_URL, params),
   },
   goals: {
-    fetchGoals: () => healthProInstance.get(GOALS_URL),
+    fetchGoals: (userId: string) =>
+      healthProInstance.get(GOALS_URL, {
+        params: { ...defaultParams, userId },
+      }),
     startUserGoal: (params: { purposeId: string; userId: string }) =>
       healthProInstance.post(`${MAIN_URL}/purpose-user`, params),
     failUserGoal: (userId: string, purposeId: string) =>

@@ -5,18 +5,20 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import { ScrollView } from "react-native-gesture-handler";
-import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../../constants";
+import { SCREEN_WIDTH } from "../../constants";
 import { Text } from "../../components/Themed";
 import Button from "../../components/Button";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { LatLng, Marker, Polyline } from "react-native-maps";
 import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 import * as TaskManager from "expo-task-manager";
+import * as Permissions from "expo-permissions";
+import { getDistanceFromLatLonInKm } from "../../utils/getDistance";
 
 export default function PhysicalActivityScreen({
   route: {
@@ -29,34 +31,67 @@ export default function PhysicalActivityScreen({
   const [location, setLocation] = useState<Location.LocationData>();
   const [errorMsg, setErrorMsg] = useState<string>();
   const [distance, setDistance] = useState(0);
-  const [speed, setSpeed] = useState(0);
+  const [coordinates, setCoordinates] = useState<LatLng[]>([]);
   const [remainingTime, setRemainingTime] = useState(duration);
   const navigation = useNavigation();
-
+  const { height, width } = Dimensions.get("window");
+  const LATITUDE_DELTA = 0.001;
+  const LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
   const LOCATION_TASK_NAME = "background-location-task";
 
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
+
       if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+        console.warn("Permission to access location was denied");
         return;
       }
-      Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {});
+      let response = await Permissions.askAsync(Permissions.LOCATION);
+      if (response.status !== "granted") {
+        console.warn("Permission to access location was denied");
+        return;
+      }
+      Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        timeInterval: 3000,
+        accuracy: 6,
+      });
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+      setCoordinates([location.coords, ...coordinates]);
     })();
+    return () => {
+      Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+    };
   }, []);
 
   TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     if (error) {
-      console.warn(error);
+      console.warn("error", error);
       return;
     }
+
     if (data) {
       const { locations } = data;
-      console.warn(locations);
+
+      setLocation(locations[0]);
+      if (isPlaying) {
+        if (locations[0].coords) {
+          setCoordinates([...coordinates, locations[0].coords]);
+        }
+
+        if (
+          coordinates[coordinates.length - 1] &&
+          locations[locations.length - 1].coords
+        ) {
+          const distance = getDistanceFromLatLonInKm(
+            coordinates[coordinates.length - 1],
+            locations[locations.length - 1].coords
+          );
+          setDistance((prev) => prev + distance);
+        }
+      }
     }
   });
 
@@ -67,6 +102,7 @@ export default function PhysicalActivityScreen({
       seconds < 10 ? "0" + seconds : seconds
     }сек`;
   }, []);
+
   const scrollViewRef = useRef<ScrollView>(null);
 
   const onPress = () => {
@@ -124,6 +160,11 @@ export default function PhysicalActivityScreen({
     [isPlaying]
   );
 
+  const speed = useMemo(
+    () => Math.round((distance / (remainingTime / 1000)) * 100) / 100,
+    [distance, remainingTime]
+  );
+
   const Map = useCallback(() => {
     const isComplete = distance >= 10;
 
@@ -132,17 +173,32 @@ export default function PhysicalActivityScreen({
         <MapView
           initialRegion={{
             ...location?.coords,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
           }}
           region={{
             ...location?.coords,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
           }}
           style={styles.map}
         >
           <Marker coordinate={location.coords} />
+          {coordinates.length > 0 && (
+            <Polyline
+              coordinates={coordinates}
+              strokeColor="#6360FF"
+              strokeColors={[
+                "#7F0000",
+                "#00000000", // no color, creates a "long" gradient between the previous and next coordinate
+                "#B24112",
+                "#E5845C",
+                "#238C23",
+                "#7F0000",
+              ]}
+              strokeWidth={6}
+            />
+          )}
         </MapView>
         <View
           style={[
@@ -168,6 +224,7 @@ export default function PhysicalActivityScreen({
   return (
     <View style={{ flex: 1, paddingVertical: 20, backgroundColor: "#fff" }}>
       <StatusBar style="dark" />
+
       <ScrollView
         style={{ flex: 1, flexGrow: 1 }}
         scrollEnabled={false}
@@ -193,13 +250,13 @@ export default function PhysicalActivityScreen({
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View>
-            <Text style={{ fontSize: 42, fontWeight: "100" }}>
-              {distance} км
+            <Text style={{ fontSize: 38, fontWeight: "100" }}>
+              {Math.round(distance * 100) / 100} км
             </Text>
             <Text>Дистанция</Text>
           </View>
           <View>
-            <Text style={{ fontSize: 42, fontWeight: "100" }}>
+            <Text style={{ fontSize: 38, fontWeight: "100" }}>
               {speed} км/ч
             </Text>
             <Text>Cредняя скорость</Text>
