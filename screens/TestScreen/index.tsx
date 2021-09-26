@@ -179,7 +179,7 @@ export default function TestScreen({ navigation, route }: Props) {
     );
     const isLastQuestion = checkIfLastQuestion();
     if (isLastQuestion) {
-      navigation.push(route.params?.nextScreen || CONGRATULATIONS_SCREEN);
+      navigation.replace(route.params?.nextScreen || CONGRATULATIONS_SCREEN);
       return;
     }
     if (
@@ -187,7 +187,7 @@ export default function TestScreen({ navigation, route }: Props) {
       answers.conditionalAnswer &&
       question?.select?.type !== QUESTION_CUSTOM_CONDITIONAL
     ) {
-      navigation.replace(TEST_SCREEN, {
+      navigation.push(TEST_SCREEN, {
         question: extraQuestion,
         nextScreen: route.params?.nextScreen || CONGRATULATIONS_SCREEN,
       });
@@ -195,7 +195,7 @@ export default function TestScreen({ navigation, route }: Props) {
       const nextQuestion: Question | undefined =
         getNextQuestion(shouldSkipCategory);
       nextQuestion &&
-        navigation.replace(TEST_SCREEN, {
+        navigation.push(TEST_SCREEN, {
           question: nextQuestion,
           nextScreen: route.params?.nextScreen || CONGRATULATIONS_SCREEN,
         });

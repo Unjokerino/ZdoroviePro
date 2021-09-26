@@ -23,6 +23,7 @@ import CustomSplash from "../../components/CustomSplash";
 import { TextInputMask } from "react-native-masked-text";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import RadioButton from "../../components/RadioButton";
+import { SHOW_SNACK_BAR } from "../../store/action-types";
 
 const keyboardBehavior = IS_IOS ? "padding" : "height";
 
@@ -38,11 +39,14 @@ export default function RegistrationScreen({ navigation, route }: Props) {
   const dispatch = useDispatch();
   const [birthDate, setBirthDate] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
-  const { email, password } = route.params;
+  const { email: tEmail, password: tPassword } = route.params;
   const [gender, setGender] = useState("");
   const [personalInfoAgreement, setPersonalInfoAgreement] = useState(false);
   const [medicalInervAgreement, setMedicalInervAgreement] = useState(false);
   const [calculatedAge, setCalculatedAge] = useState<number | undefined>();
+  const [password, setPassword] = useState<string | null>(tPassword);
+  const [email, setEmail] = useState<string | null>(tEmail);
+  const [isValidEmail, setIsValidEmail] = useState<boolean | undefined>();
 
   useEffect(() => {
     const bd = moment(birthDate?.split("/").reverse().join(""));
@@ -51,7 +55,14 @@ export default function RegistrationScreen({ navigation, route }: Props) {
   }, [birthDate]);
 
   const signUp = () => {
-    dispatch(signUpAction({ email, password }));
+    if (email && password && isValidEmail) {
+      dispatch(signUpAction({ email, password }));
+    } else {
+      dispatch({
+        type: SHOW_SNACK_BAR,
+        payload: "Введите email и пароль",
+      });
+    }
   };
 
   const Link = ({ children, href }: { children: string; href: string }) => (
@@ -66,6 +77,25 @@ export default function RegistrationScreen({ navigation, route }: Props) {
     </TouchableOpacity>
   );
 
+  const validateEmail = (mail: string) => {
+    if (
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+        mail
+      )
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  const onEmailChange = (email: string) => {
+    setEmail(email);
+    const isValid = validateEmail(email);
+
+    setIsValidEmail(isValid);
+  };
+
   return (
     <CustomSplash
       title="Здоровье PRO"
@@ -76,99 +106,129 @@ export default function RegistrationScreen({ navigation, route }: Props) {
         />
       }
     >
-      <View>
-        <View style={styles.inputContainer}>
+      <>
+        <View
+          style={[
+            styles.inputContainer,
+            isValidEmail === false ? { backgroundColor: "#e91e63" } : {},
+          ]}
+        >
           <Icons.MailIcon />
           <TextInput
-            onChangeText={setName}
-            value={name || ""}
-            placeholder="ФИО"
+            onChangeText={onEmailChange}
+            value={email || ""}
+            autoCompleteType="email"
+            placeholder="Email"
             style={styles.input}
           />
         </View>
         <View style={styles.inputContainer}>
           <Icons.LockIcon />
-          <TextInputMask
-            type={"datetime"}
-            options={{
-              format: "DD/MM/YYYY",
-            }}
-            placeholder="Дата рождения (день, месяц, год)"
-            value={birthDate || ""}
-            onChangeText={setBirthDate}
+          <TextInput
+            value={password || ""}
+            onChangeText={setPassword}
+            autoCompleteType="password"
+            placeholder="Password"
             style={styles.input}
-            keyboardType="number-pad"
+            secureTextEntry
           />
         </View>
-        {!!calculatedAge && (
-          <View style={[typography.row, { marginBottom: 20 }]}>
-            <Text>В этом году вам исполнилось</Text>
-            <Text style={{ fontWeight: "bold" }}> {calculatedAge}</Text>
+        <View>
+          <View style={styles.inputContainer}>
+            <Icons.MailIcon />
+            <TextInput
+              onChangeText={setName}
+              value={name || ""}
+              placeholder="ФИО"
+              style={styles.input}
+            />
           </View>
-        )}
-        <Text>Пол</Text>
-        <View
-          style={[
-            typography.row,
-            { justifyContent: "flex-start", marginBottom: 15 },
-          ]}
-        >
+          <View style={styles.inputContainer}>
+            <Icons.LockIcon />
+            <TextInputMask
+              type={"datetime"}
+              options={{
+                format: "DD/MM/YYYY",
+              }}
+              placeholder="Дата рождения (день, месяц, год)"
+              value={birthDate || ""}
+              onChangeText={setBirthDate}
+              style={styles.input}
+              keyboardType="number-pad"
+            />
+          </View>
+          {!!calculatedAge && (
+            <View style={[typography.row, { marginBottom: 20 }]}>
+              <Text>В этом году вам исполнилось</Text>
+              <Text style={{ fontWeight: "bold" }}> {calculatedAge}</Text>
+            </View>
+          )}
+          <Text>Пол</Text>
+          <View
+            style={[
+              typography.row,
+              { justifyContent: "flex-start", marginBottom: 15 },
+            ]}
+          >
+            <View style={[typography.row]}>
+              <RadioButton
+                color="#6360FF"
+                value="male"
+                status={gender === "male" ? "checked" : "unchecked"}
+                onPress={() => setGender("male")}
+              />
+              <Text style={styles.gender}>Мужской</Text>
+            </View>
+            <View style={[typography.row, { marginLeft: 33 }]}>
+              <RadioButton
+                color="#6360FF"
+                value="female"
+                status={gender === "female" ? "checked" : "unchecked"}
+                onPress={() => setGender("female")}
+              />
+              <Text style={styles.gender}>Женский</Text>
+            </View>
+          </View>
           <View style={[typography.row]}>
-            <RadioButton
-              color="#6360FF"
-              value="male"
-              status={gender === "male" ? "checked" : "unchecked"}
-              onPress={() => setGender("male")}
+            <Checkbox
+              color="#DF88B0"
+              status={personalInfoAgreement ? "checked" : "unchecked"}
+              onPress={() => {
+                setPersonalInfoAgreement(!personalInfoAgreement);
+              }}
             />
-            <Text style={styles.gender}>Мужской</Text>
+            <View style={[typography.row, { flex: 1, flexWrap: "wrap" }]}>
+              <Text style={styles.description}>Согласие на обработку </Text>
+              <Link href="https://zdorovie.pro/privacy">
+                персональных данных
+              </Link>
+            </View>
           </View>
-          <View style={[typography.row, { marginLeft: 33 }]}>
-            <RadioButton
-              color="#6360FF"
-              value="female"
-              status={gender === "female" ? "checked" : "unchecked"}
-              onPress={() => setGender("female")}
+          <View style={[typography.row]}>
+            <Checkbox
+              color="#77A2D3"
+              status={medicalInervAgreement ? "checked" : "unchecked"}
+              onPress={() => {
+                setMedicalInervAgreement(!medicalInervAgreement);
+              }}
             />
-            <Text style={styles.gender}>Женский</Text>
+            <View style={[typography.row, { flex: 1, flexWrap: "wrap" }]}>
+              <Text style={styles.description}>
+                Информированное добровольное согласие на
+              </Text>
+              <Link href="https://zdorovie.pro/medical ">
+                медицинское вмешательство
+              </Link>
+            </View>
           </View>
-        </View>
-        <View style={[typography.row]}>
-          <Checkbox
-            color="#DF88B0"
-            status={personalInfoAgreement ? "checked" : "unchecked"}
-            onPress={() => {
-              setPersonalInfoAgreement(!personalInfoAgreement);
-            }}
+          <Button
+            style={{ marginTop: 33, marginBottom: 50 }}
+            title="Закончить регистрацию"
+            mode="contained"
+            onPress={signUp}
           />
-          <View style={[typography.row, { flex: 1, flexWrap: "wrap" }]}>
-            <Text style={styles.description}>Согласие на обработку </Text>
-            <Link href="https://zdorovie.pro/privacy">персональных данных</Link>
-          </View>
         </View>
-        <View style={[typography.row]}>
-          <Checkbox
-            color="#77A2D3"
-            status={medicalInervAgreement ? "checked" : "unchecked"}
-            onPress={() => {
-              setMedicalInervAgreement(!medicalInervAgreement);
-            }}
-          />
-          <View style={[typography.row, { flex: 1, flexWrap: "wrap" }]}>
-            <Text style={styles.description}>
-              Информированное добровольное согласие на
-            </Text>
-            <Link href="https://zdorovie.pro/medical ">
-              медицинское вмешательство
-            </Link>
-          </View>
-        </View>
-        <Button
-          style={{ marginTop: 33, marginBottom: 50 }}
-          title="Закончить регистрацию"
-          mode="contained"
-          onPress={signUp}
-        />
-      </View>
+      </>
     </CustomSplash>
   );
 }

@@ -2,9 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Caption, IconButton, List, Subheading } from "react-native-paper";
+import { useSelector } from "react-redux";
 import Button from "../components/Button";
 import CustomLayout from "../components/CustomLayout";
 import { Title } from "../components/Themed";
+import { RootState } from "../types/store";
 import { Answers } from "./TestScreen";
 
 export default function AchievementsScreen() {
@@ -12,6 +14,10 @@ export default function AchievementsScreen() {
   useEffect(() => {
     getTestResult();
   }, []);
+
+  const {
+    authReducer: { identity },
+  } = useSelector((state: RootState) => state);
 
   const getTestResult = async () => {
     const answers: string | null = await AsyncStorage.getItem("testResults");
@@ -22,8 +28,8 @@ export default function AchievementsScreen() {
   };
 
   const clearResults = async () => {
-    await AsyncStorage.removeItem("testResults");
-    await AsyncStorage.removeItem("testDone");
+    await AsyncStorage.removeItem(`@user_${identity.email}_testResults`);
+    await AsyncStorage.removeItem(`@user_${identity.email}_testDone`);
   };
 
   return (

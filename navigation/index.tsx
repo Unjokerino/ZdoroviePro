@@ -181,7 +181,7 @@ function CustomDrawerContent({
       <View style={{ paddingLeft: 28, marginBottom: 10 }}>
         <Text
           onPress={() => navigation.navigate("Test", { screen: TAKE_TEST })}
-          style={{ fontSize: 21, marginBottom: 10 }}
+          style={{ fontSize: 18, marginBottom: 10 }}
         >
           Профилактический медицинский осмотр / Диспансеризация
         </Text>
@@ -267,10 +267,16 @@ function CustomDrawerContent({
 function DrawerNavigator() {
   const [testStatus, setTestStatus] = React.useState(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const {
+    authReducer: { identity },
+  } = useSelector((state: RootState) => state);
+
   const fetchTestStatus = async () => {
     setLoading(true);
     try {
-      const status = !!(await AsyncStorage.getItem("testDone"));
+      const status = !!(await AsyncStorage.getItem(
+        `@user_${identity.email}_testDone`
+      ));
       setTestStatus(status);
       setLoading(false);
     } catch (error) {

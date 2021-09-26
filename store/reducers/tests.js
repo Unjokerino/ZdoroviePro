@@ -8,6 +8,9 @@ import {
   SIGN_OUT,
   SECOND_TEST_SUCCESS,
   SKIP_CATEGORY,
+  DECREMENT_CURRENT_CATEGORY,
+  DECREMENT_CURRENT_QUESTION,
+  DECREMENT_CURRENT_TEST_FAIL,
 } from "../action-types";
 
 const initialState = {
@@ -49,7 +52,15 @@ export default (state = initialState, action) => {
         currentQuestionIndex: 0,
         answers: getAnswers(state, action),
       };
-
+    case DECREMENT_CURRENT_CATEGORY:
+      return {
+        ...state,
+        currentCategoryIndex: state.currentCategoryIndex - 1,
+        currentQuestionIndex: payload,
+      };
+    case DECREMENT_CURRENT_QUESTION:
+      return { ...state, currentQuestionIndex: state.currentQuestionIndex - 1 };
+    case DECREMENT_CURRENT_TEST_FAIL:
     case INCREMENT_CURRENT_TEST_FAIL:
     case MAIN_TEST_FAIL:
     case SECOND_TEST_FAIL:

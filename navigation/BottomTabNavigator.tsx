@@ -31,6 +31,7 @@ import RatingModal from "../components/RatingModal";
 import ProfileScreen from "../screens/ProfileScreen";
 import AchievementsScreen from "../screens/AchievementsScreen";
 import PhysicalActivityScreen from "../screens/DetailedGoalScreen/PhysicalActivityScreen";
+import GoalsTabScreen from "../screens/GoalsTabScreen";
 
 const EmptyComponent = () => <View />;
 
@@ -48,7 +49,7 @@ export default function BottomTabNavigator() {
     [HOME_SCREEN]: HomeNavigator,
     [PROFILE_SCREEN]: ProfileScreen,
     [ACHIEVEMENTS_SCREEN]: AchievementsScreen,
-    [GOALS_SCREEN]: EmptyComponent,
+    [GOALS_SCREEN]: GoalsTabScreen,
   });
 
   const renderIcon = (color: string, { key }: { key: string }) => {

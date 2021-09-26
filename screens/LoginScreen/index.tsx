@@ -58,14 +58,7 @@ export default function TestScreen({ navigation }) {
   };
 
   const signUp = () => {
-    if (email && password && isValidEmail) {
-      navigation.navigate(REGISTRATION_SCREEN, { email, password });
-    } else {
-      dispatch({
-        type: SHOW_SNACK_BAR,
-        payload: "Введите email и пароль",
-      });
-    }
+    navigation.navigate(REGISTRATION_SCREEN, { email, password });
   };
 
   const onEmailChange = (email: string) => {

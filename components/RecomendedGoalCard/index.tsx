@@ -108,6 +108,7 @@ export default function RecomendedGoalCard({
           style={{
             opacity: 1,
             borderRadius: 8,
+            paddingHorizontal: 12,
             paddingVertical: 6,
           }}
           mode="contained"

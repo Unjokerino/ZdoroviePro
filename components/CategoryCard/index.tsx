@@ -55,7 +55,7 @@ export default function CategoryCard({
     <View
       style={{
         borderRadius: 30,
-        backgroundColor: "#6360FF",
+        backgroundColor: IS_IOS ? "#6360FF" : "#6455fa",
         height: SCREEN_HEIGHT * 0.6,
         width: "100%",
       }}

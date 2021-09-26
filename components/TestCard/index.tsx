@@ -27,6 +27,10 @@ import Button from "../Button";
 import Question from "../Question";
 import styles from "./styles";
 import { Text } from "../../components/Themed";
+import { IconButton } from "react-native-paper";
+import { useNavigation } from "@react-navigation/core";
+import { decrementCurrentTest } from "../../store/actions";
+import { useDispatch } from "react-redux";
 
 interface TestCardProps extends QuestionProps {
   setAnswers: (answer: Answer) => void;
@@ -35,6 +39,8 @@ interface TestCardProps extends QuestionProps {
 }
 
 const TestCard = (question: TestCardProps) => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [scrollY] = useState(new Animated.Value(0));
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const width = scrollY.interpolate({
@@ -148,38 +154,15 @@ const TestCard = (question: TestCardProps) => {
   };
 
   return (
-    <>
-      <Animated.View
-        style={{
-          backgroundColor,
-          alignItems: "center",
-          position: "relative",
-          width: "100%",
-
-          borderRadius: 20,
-          borderBottomLeftRadius: 0,
-          borderBottomRightRadius: 0,
+    <View style={{ backgroundColor: "#fff", flex: 1 }}>
+      <IconButton
+        onPress={() => {
+          navigation.goBack();
+          dispatch(decrementCurrentTest());
         }}
-      >
-        <Text>{question.select?.type}</Text>
-        <Animated.View
-          style={[
-            styles.iconContainer,
-            {
-              width,
-
-              borderRadius: 20,
-              borderTopLeftRadius: borderRadius,
-              borderTopRightRadius: borderRadius,
-            },
-          ]}
-        >
-          <Image style={styles.icon} resizeMode="contain" source={{ uri }} />
-        </Animated.View>
-        {renderTitle()}
-        {renderSubTitle()}
-      </Animated.View>
-
+        style={{ margin: 10 }}
+        icon="arrow-left"
+      />
       <ScrollView
         // onScroll={Animated.event(
         //   [
@@ -198,9 +181,38 @@ const TestCard = (question: TestCardProps) => {
         contentContainerStyle={styles.contentContainer}
         style={styles.container}
       >
+        <Animated.View
+          style={{
+            backgroundColor,
+            alignItems: "center",
+            position: "relative",
+            width: "100%",
+
+            borderRadius: 20,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          }}
+        >
+          <Animated.View
+            style={[
+              styles.iconContainer,
+              {
+                width,
+
+                borderRadius: 20,
+                borderTopLeftRadius: borderRadius,
+                borderTopRightRadius: borderRadius,
+              },
+            ]}
+          >
+            <Image style={styles.icon} resizeMode="contain" source={{ uri }} />
+          </Animated.View>
+        </Animated.View>
+        {renderTitle()}
+        {renderSubTitle()}
         {renderContent()}
       </ScrollView>
-    </>
+    </View>
   );
 };
 

@@ -6,11 +6,12 @@ const storeObject = async (store: MiddlewareAPI, key: string) => {
   await AsyncStorage.setItem(key, JSON.stringify(data));
 };
 
-export default (saver: (_action: Action) => Array<string>): Middleware => (
-  store
-) => (next) => (action) => {
-  const result = next(action);
-  const keys = saver(action);
-  keys.forEach(async (key: string) => await storeObject(store, key));
-  return result;
-};
+export default (saver: (_action: Action) => Array<string>): Middleware =>
+  (store) =>
+  (next) =>
+  (action) => {
+    const result = next(action);
+    const keys = saver(action);
+    keys.forEach(async (key: string) => await storeObject(store, key));
+    return result;
+  };

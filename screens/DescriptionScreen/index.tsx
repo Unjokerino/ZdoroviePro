@@ -40,12 +40,16 @@ export default function DescriptionScreen({ navigation }) {
   const disabled = isLoading && !!question;
 
   const {
+    authReducer: { identity },
     testsReducer: { answers },
   } = useSelector((state: RootState) => state);
 
   useEffect(() => {
-    AsyncStorage.setItem("testResults", JSON.stringify(answers));
-    AsyncStorage.setItem("testDone", "true");
+    AsyncStorage.setItem(
+      `@user_${identity.email}_testResults`,
+      JSON.stringify(answers)
+    );
+    AsyncStorage.setItem(`@user_${identity.email}_testDone`, "true");
     // dispatch(getSecondTest());
   }, []);
 
